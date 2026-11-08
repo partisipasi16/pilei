@@ -121,6 +121,10 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 #menu button{background:var(--c);color:#fff}#menu button.on{background:#fff;color:var(--c)}
 .legend{display:grid;grid-template-columns:auto auto;column-gap:14px;width:max-content;max-width:100%}.legend b{margin:4px 0;text-align:right}.hdr .legend b{margin:2px 0}.dn .legend{margin:0 auto}.dn .legend span{text-align:left}
 .card.off{opacity:.5}.card.off .clh{cursor:not-allowed}.chev:disabled{opacity:.5;cursor:not-allowed;background:#9a9cc8}
+header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;margin-top:-1px}
+#dp{max-height:60vh;overflow:auto}#dp .ht th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
+.mact{gap:12px 26px}
+.srch{position:relative;margin:16px 0 10px}.srch input{padding-left:38px;padding-right:40px}.srch .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#56597a;display:grid;pointer-events:none}.srch .qx{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}.srch .qx[hidden]{display:none}
 </style></head><body>
 
 <div id="splash" class="abs">
@@ -342,7 +346,7 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div><label>RT</label><input id="rt" class="num" inputmode="numeric" maxlength="3" placeholder="01"></div>
   <div><label>Nomor HP</label><input id="hp" inputmode="tel"></div></div>
   <div class="grid2"><div><label>Nama Petugas</label><input id="nm"></div><div><label>NIK</label><input id="nik" class="num" inputmode="numeric" maxlength="16"></div></div>
-  <button class="btn ok" id="sv">Simpan</button> <button class="btn ok line" id="sv2">Simpan +</button> <button class="btn ghost hide" id="cx">Batal</button><div class="msg" id="m"></div><div class="scroll" id="ls"></div></div>
+  <button class="btn ok" id="sv">Simpan</button> <button class="btn ok line" id="sv2">Simpan +</button> <button class="btn ghost hide" id="cx">Batal</button><div class="msg" id="m"></div><div class="srch"><span class="si">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)}</span><input id="qs" autocomplete="off" placeholder="Cari nama, HP, RT, atau RW" aria-label="Cari petugas"><button type="button" class="qx" id="qx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div class="scroll" id="ls"></div></div>
  <div class="card pnl hide" id="p_tahapan"><h3 id="tt" class="hide"></h3><div>
   <div><label for="tn">Nama Tahapan</label><select id="tn"><option value="">Pilih tahapan</option><option>Pengumuman</option><option>Pendataan</option><option>Pencalonan</option><option>Pemilihan</option><option>Penghitungan</option><option>Penetapan</option></select></div>
   <div class="dua"><div><label>Tanggal Awal</label><input id="ta" type="date"></div><div><label>Tanggal Akhir</label><input id="tb" type="date"></div></div>
@@ -361,9 +365,10 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  $('#tbtn').onclick=()=>{offMenu();openSub('Timeline Tahapan',$('#p_tahapan'));lt()};
  // --- Pendata warga (registrasi petugas)
  let rows=[],ed=null,lastRw='',hl=null;
- const lp=async()=>{const {data}=await sb.from('petugas').select('*').eq('kelurahan',S.kelurahan).order('created_at',{ascending:false});rows=data||[];
-  const tc=(f,h)=>rows.map((r,i)=>`<td${h&&r.hp==hl?' class="new"':''}>${f(r,i)}</td>`).join('');
-  $('#ls').innerHTML=rows.length?'<table class="vt"><tr><th>No</th>'+tc((r,i)=>i+1,1)+'</tr><tr><th>RT/RW</th>'+tc(r=>r.rt+'/'+r.rw,1)+'</tr><tr><th>Nama</th>'+tc(r=>esc(r.nama),1)+'</tr><tr><th>HP</th>'+tc(r=>esc(r.hp),1)+'</tr><tr><th>Aksi</th>'+tc((r,i)=>`<button class="btn alt sm" data-e="${i}">Edit</button><button class="btn del sm" data-d="${i}">Hapus</button>`)+'</tr></table>':''};
+ const lp=async()=>{const {data}=await sb.from('petugas').select('*').eq('kelurahan',S.kelurahan).order('created_at',{ascending:false});rows=data||[];draw()};
+ const draw=()=>{const k=($('#qs').value||'').trim().toLowerCase(),V=rows.map((r,i)=>({r,i})).filter(({r})=>!k||[r.rt+'/'+r.rw,r.rt,r.rw,r.nama,r.hp].join(' ').toLowerCase().includes(k));
+  const tc=(f,h)=>V.map(({r,i},n)=>`<td${h&&r.hp==hl?' class="new"':''}>${f(r,i,n)}</td>`).join('');
+  $('#ls').innerHTML=rows.length?(V.length?'<table class="vt"><tr><th>No</th>'+tc((r,i,n)=>n+1,1)+'</tr><tr><th>RT/RW</th>'+tc(r=>r.rt+'/'+r.rw,1)+'</tr><tr><th>Nama</th>'+tc(r=>esc(r.nama),1)+'</tr><tr><th>HP</th>'+tc(r=>esc(r.hp),1)+'</tr><tr><th>Aksi</th>'+tc((r,i)=>`<button class="btn alt sm" data-e="${i}">Edit</button><button class="btn del sm" data-d="${i}">Hapus</button>`)+'</tr></table>':'<p class="hint">Tidak ada data yang cocok.</p>'):''};
  const dup=async f=>{const el=$('#'+f),v=el.value.trim(),m=$('#m');if(!v)return false;
   let q=sb.from('petugas').select('hp,nama').eq(f,v);if(ed)q=q.neq('hp',ed);const {data}=await q.limit(1);
   if(data&&data.length){const t=f=='hp'?'Nomor HP':'NIK';m.className='msg';m.textContent=t+' sudah terdaftar atas nama '+data[0].nama+'. Ganti '+t+' tersebut.';el.value='';el.focus();return true}
@@ -373,13 +378,13 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  $('#ls').onclick=e=>{const b=e.target.closest('button');if(!b)return;const m=$('#m');
   if(b.dataset.e!=null){const r=rows[b.dataset.e];ed=r.hp;$('#rt').value=r.rt;$('#rw').value=r.rw;$('#hp').value=r.hp;$('#nm').value=r.nama;$('#nik').value=r.nik;$('#sv').textContent='Perbarui';$('#sv2').classList.add('hide');$('#cx').classList.remove('hide');$('#pt').textContent='Edit Pendata Warga';m.textContent='';$('#p_pendata').scrollIntoView({behavior:'smooth'});$('#rw').focus()}
   else if(b.dataset.d!=null){const r=rows[b.dataset.d];askConfirm('Hapus petugas?',r.nama+' (HP '+r.hp+', RT/RW '+r.rt+'/'+r.rw+') akan dihapus.',async()=>{const {error}=await sb.from('petugas').delete().eq('hp',r.hp);m.className=error?'msg':'msg ok';m.textContent=error?error.message:'Petugas dihapus.';if(!error){if(ed==r.hp)reset();lp()}})}};
- $('#hp').onchange=()=>dup('hp');$('#nik').oninput=e=>{if(e.target.value.length==16)dup('nik')};
+ $('#hp').onchange=()=>dup('hp');$('#qs').oninput=()=>{$('#qx').hidden=!$('#qs').value;draw()};$('#qx').onclick=()=>{$('#qs').value='';$('#qx').hidden=true;draw();$('#qs').focus()};$('#nik').oninput=e=>{if(e.target.value.length==16)dup('nik')};
  const save=async keep=>{const r={hp:$('#hp').value.trim(),nama:$('#nm').value.trim(),nik:$('#nik').value.trim(),rw:pad($('#rw').value.trim()),rt:pad($('#rt').value.trim()),kelurahan:S.kelurahan,created_by:S.hp},m=$('#m');
   if(!r.hp||!r.nama||!r.rw||!r.rt||r.nik.length!=16){m.className='msg';m.textContent='Lengkapi isian. RT dan RW harus angka (contoh 01 atau 10), NIK 16 digit.';return}
   if(await dup('hp')||await dup('nik'))return;
   const was=ed;let q;if(ed){if(r.hp!=ed)r.pass_hash=null;delete r.created_by;q=await sb.from('petugas').update(r).eq('hp',ed)}else q=await sb.from('petugas').insert(r);
   const error=q.error;m.className=error?'msg':'msg ok';m.textContent=error?(error.code=='23505'?'Nomor HP atau NIK sudah terdaftar.':error.message):(was?'Perubahan tersimpan.':'Petugas tersimpan.');
-  if(!error){lastRw=r.rw;hl=r.hp;reset(keep);await lp();hl=null}};
+  if(!error){lastRw=r.rw;hl=r.hp;$('#qs').value='';$('#qx').hidden=true;reset(keep);await lp();hl=null}};
  $('#sv').onclick=()=>save(false);$('#sv2').onclick=()=>save(true);
  // --- Tahapan pemilihan
  let tr=[],ted=null;const tsync=()=>{const a=$('#ta').value,b=$('#tb');b.disabled=!a;b.min=a||'';if(!a||(b.value&&b.value<a))b.value=''};
@@ -478,8 +483,8 @@ const calonCard=j=>`<div class="card" id="cc${j}"><div class="rowh clh"><h3>Calo
 let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
  const canAdd=()=>tl.some(t=>kind(t)=='pendataan'&&aktif(t));
- A.innerHTML=head(esc(S.nama),'RT '+S.rt+' / RW '+S.rw,`<div class="hd" id="dn">${hdrP(l,p,canAdd())}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}<button class="btn alt wide" id="tb2" type="button"${canAdd()?'':' hidden'}>${ic(PG,20)}Tambah Data Pemilih</button>
- <section class="flat"><h3>Data Pemilih</h3><div class="scroll" id="dp"></div></section>
+ A.innerHTML=head(esc(S.nama),'Pendata RT '+esc(S.rt)+'/RW '+esc(S.rw)+' '+esc(S.kelurahan),`<div class="hd" id="dn">${hdrP(l,p,canAdd())}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}<button class="btn alt wide" id="tb2" type="button"${canAdd()?'':' hidden'}>${ic(PG,20)}Tambah Data Pemilih</button>
+ <section class="flat"><h3>Data Pemilih</h3><div id="dpc"></div><div class="scroll" id="dp"></div></section>
  <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><div class="rowh" style="margin-bottom:6px"><p class="hint" style="margin:0">Semua isian wajib diisi.</p><button class="btn ghost sm" id="cx" type="button">Batal</button></div><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
  <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"><div class="msg nkm"></div></div><div><label>Alamat</label><input id="al"></div>
@@ -535,7 +540,7 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
   const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count,0);
-  el.innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
+  $('#dpc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
  const syncAdd=()=>{const on=canAdd();$('#tb2').hidden=!on;if(on!=!!$('#tb'))refresh()};
  setInterval(syncAdd,30000);loadDp();
  // --- Nomor HP KK tidak boleh sama (dicek sejak diisi, dan sekali lagi saat simpan)
