@@ -350,7 +350,7 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  <div class="card pnl hide" id="p_pemilihan"><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
  <div class="card pnl hide" id="p_penghitungan"><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div><div id="gres"></div></div>
  <div class="card pnl hide" id="p_penetapan"><h3>Calon Terpilih</h3><div class="dua"><div><label for="trt">RT</label><select id="trt"></select></div><div><label for="trw">RW</label><select id="trw" disabled></select></div></div><div id="tres"></div></div></main>`;
- bindMenu(async k=>{openSub(({pendata:'Tim Pendata Warga',pencalonan:'Pendaftaran Calon',pemilihan:'Proses Pemilihan',penghitungan:'Hasil Pemilihan Suara'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
+ bindMenu(async k=>{openSub(({pendata:'Pendata Warga',pencalonan:'Pendaftaran Calon',pemilihan:'Proses Pemilihan',penghitungan:'Penghitungan Suara'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
   if(k=='pendata'){lp();$('#rw').focus()}
   if(k=='pencalonan'){$('#crt').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT')});loadCalon('RW');loadCalon('RT')}
   if(k=='pemilihan'){$('#hrt').focus();await pair('h',()=>showHasil());$('#hres').innerHTML=''}
