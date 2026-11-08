@@ -41,7 +41,7 @@ main{max-width:900px;margin:0 auto;padding:18px}
 .menu button i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--c);color:#fff}.menu button i svg{width:23px;height:23px}.menu button.on i{outline:3px solid var(--gold);outline-offset:2px}
 .sm{padding:5px 10px;font-size:13px;margin:0 4px 0 0}.btn.del{background:#b3261e;color:#fff}
 .pw{position:relative}.pw input{padding-right:46px}.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}
-.exit{margin:0;flex:none;width:40px;height:40px;border-radius:10px;background:#ff2d2d45;border:1px solid #ff7a7a99;color:#fff;display:grid;place-items:center;cursor:pointer}
+.exit{margin:0;flex:none;width:40px;height:40px;border-radius:10px;background:#8ecbff5c;border:1px solid #c4e5ffcc;color:#fff;display:grid;place-items:center;cursor:pointer}
 .modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:20;padding:20px}.mb{background:#fff;border-radius:14px;padding:22px;max-width:340px;width:100%;text-align:center}.mb p{color:#56597a}
 .ttl{font-size:clamp(14px,4.4vw,19px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header.top .row>div:first-child{min-width:0;flex:1}.hd{position:relative;margin-top:10px}.hdc{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:0 20px}.hdc svg{display:block}.hdr .legend{color:#fff;font-size:13px;text-align:left}.hdr .legend span{margin:2px 0;white-space:nowrap}.hdr .btn{margin:8px 0 0;background:#ffffff4d;color:#fff;border-radius:20px;padding:7px 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
@@ -107,6 +107,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 .tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:13.5px;line-height:1.2;padding:12px 2px;text-align:center}
 .tabs button:disabled{opacity:.4;cursor:not-allowed}
 .tbtn{display:inline-flex;align-items:center;gap:6px}
+.btn.ok{background:#2e8b57;color:#fff}.btn.ok.line{background:#fff;color:#2e8b57;border:1.5px solid #2e8b57}.btn.ok::before{content:'';display:inline-block;width:17px;height:17px;margin-right:7px;vertical-align:-3px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat}
+.wide{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:14px;font-size:16px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1b1d3b;color:#fff;padding:10px 18px;border-radius:24px;z-index:30;font-size:14px;max-width:90vw;text-align:center}
 #sub{position:fixed;inset:0;z-index:15;background:var(--paper);overflow-y:auto;animation:slr .45s cubic-bezier(.22,.8,.3,1) both}
 #sub.out{animation:sout .35s ease-in both;pointer-events:none}
@@ -336,12 +338,12 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div><label>RT</label><input id="rt" class="num" inputmode="numeric" maxlength="3" placeholder="01"></div>
   <div><label>Nomor HP</label><input id="hp" inputmode="tel"></div></div>
   <div class="grid2"><div><label>Nama Petugas</label><input id="nm"></div><div><label>NIK</label><input id="nik" class="num" inputmode="numeric" maxlength="16"></div></div>
-  <button class="btn" id="sv">Simpan</button> <button class="btn alt" id="sv2">Simpan +</button> <button class="btn ghost hide" id="cx">Batal</button><div class="msg" id="m"></div><div class="scroll" id="ls"></div></div>
+  <button class="btn ok" id="sv">Simpan</button> <button class="btn ok line" id="sv2">Simpan +</button> <button class="btn ghost hide" id="cx">Batal</button><div class="msg" id="m"></div><div class="scroll" id="ls"></div></div>
  <div class="card pnl hide" id="p_tahapan"><h3 id="tt" class="hide"></h3><div>
   <div><label for="tn">Nama Tahapan</label><select id="tn"><option value="">Pilih tahapan</option><option>Pengumuman</option><option>Pendataan</option><option>Pencalonan</option><option>Pemilihan</option><option>Penghitungan</option><option>Penetapan</option></select></div>
   <div class="dua"><div><label>Tanggal Awal</label><input id="ta" type="date"></div><div><label>Tanggal Akhir</label><input id="tb" type="date"></div></div>
   <div class="dua"><div><label>Waktu Awal</label><input id="ja" type="time" value="00:01"></div><div><label>Waktu Akhir</label><input id="jb" type="time" value="23:59"></div></div></div>
-  <button class="btn" id="tsv">Simpan</button> <button class="btn ghost hide" id="tcx">Batal</button><div class="msg" id="tm"></div><div class="scroll" id="tls"></div></div>
+  <button class="btn ok" id="tsv">Simpan</button> <button class="btn ghost hide" id="tcx">Batal</button><div class="msg" id="tm"></div><div class="scroll" id="tls"></div></div>
  
  <div class="pnl hide" id="p_pencalonan"><h3 style="margin:2px 0 12px">Pendaftaran Calon</h3><div class="card"><div class="dua"><div><label for="crt">RT</label><select id="crt"></select></div><div><label for="crw">RW</label><select id="crw" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
  <div class="card pnl hide" id="p_pemilihan"><h3>Hasil Pemilihan</h3><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
@@ -469,13 +471,13 @@ const calonCard=j=>`<div class="card"><h3>Calon Ketua ${j}</h3>
 
 let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
- A.innerHTML=head(esc(S.nama),'RT '+S.rt+' / RW '+S.rw,`<div class="hd" id="dn">${hdrP(l,p)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}
- <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><p class="hint">Semua isian wajib diisi.</p><div class="grid2">
+ A.innerHTML=head(esc(S.nama),'RT '+S.rt+' / RW '+S.rw,`<div class="hd" id="dn">${hdrP(l,p)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}<button class="btn alt wide" id="tb2" type="button">${ic(PG,20)}Tambah Data Pemilih</button>
+ <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><div class="rowh" style="margin-bottom:6px"><p class="hint" style="margin:0">Semua isian wajib diisi.</p><button class="btn ghost sm" id="cx" type="button">Batal</button></div><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
  <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"></div><div><label>Alamat</label><input id="al"></div>
  <div><label>No HP Keluarga</label><input id="hk" class="num" inputmode="tel" maxlength="15"></div></div>
  <h3 style="margin-top:18px">Anggota Keluarga</h3><div id="ml"></div>
- <button class="btn ghost" id="add" type="button">+ Tambah anggota</button> <button class="btn" id="sv" type="button">Simpan</button> <button class="btn ghost" id="cx" type="button">Batal</button><div class="msg" id="m"></div></div></main>`;
+ <button class="btn ghost" id="add" type="button" disabled>+ Tambah anggota</button> <button class="btn ok" id="sv" type="button" disabled>Simpan</button><div class="msg" id="m"></div></div></main>`;
  const DENY='Ditolak oleh database. Jalankan bagian kebijakan (policy) pada update_registrasi_warga.sql di Supabase > SQL Editor.';
  const ml=$('#ml'),strip=a=>({nkk:a.nkk,nik:a.nik,nama:a.nama,jk:a.jk,hubungan:a.hubungan,tempat_lahir:a.tempat_lahir,tgl_lahir:a.tgl_lahir,pekerjaan:a.pekerjaan});
  let kk=[],ed=null,old=[],base='',nikV=false;
@@ -486,10 +488,13 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
  const open=(r,ang)=>{ed=r?r.nkk:null;old=ang||[];ml.innerHTML='';['nkk','nkp','nkik','al','hk'].forEach(i=>$('#'+i).value='');
   if(r){$('#nkk').value=r.nkk;$('#nkp').value=r.nama_kk||'';$('#nkik').value=r.nik_kk||'';$('#al').value=r.alamat||'';$('#hk').value=r.hp||'';(old.length?old:[{}]).forEach(a=>ml.append(memRow(a)))}
   renum();$('#nkk').disabled=!!r;$('#pt').textContent=r?'Edit Data Keluarga':'Tambah Data Warga';$('#sv').textContent=r?'Perbarui':'Simpan';$('#m').textContent='';
-  openSub('Tambah Data Pemilih',$('#pd'),{onClose:reset,guard:()=>{if(vals()==base)return false;askConfirm('Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',()=>{base=vals();history.back()},'Ya, batalkan');return true}});base=vals();(r?$('#nkp'):$('#nkk')).focus()};
+  openSub('Tambah Data Pemilih',$('#pd'),{onClose:reset,guard:()=>{if(vals()==base)return false;askConfirm('Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',()=>{base=vals();history.back()},'Ya, batalkan');return true}});base=vals();upd();(r?$('#nkp'):$('#nkk')).focus()};
  const reset=()=>{ed=null;old=[];ml.innerHTML='';$('#m').textContent='';$('#nkk').disabled=false};const close=()=>history.back();
  const cancel=()=>{if(vals()!=base)askConfirm(ed?'Batalkan perubahan?':'Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',close,'Ya, batalkan');else close()};
  $('#dn').onclick=e=>{if(e.target.closest('#tb'))open()};
+ $('#tb2').onclick=()=>open();
+ const upd=()=>{const ok=['nkk','nkp','nkik','al','hk'].every(i=>$('#'+i).value.trim());$('#add').disabled=!ok;$('#sv').disabled=!ok};
+ $('#pd').addEventListener('input',upd);$('#pd').addEventListener('change',upd);
  const needAng=()=>{if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML='<div class="mb" role="dialog" aria-modal="true"><h3>Anggota Keluarga</h3><p>Anda wajib menginput anggota keluarga (minimal 1 orang)</p><button class="btn alt" id="xa" type="button">+ Tambah anggota</button></div>';document.body.append(d);$('#xa').onclick=()=>{d.remove();$('#add').click()}};
  $('#cx').onclick=cancel;
  $('#add').onclick=()=>{ml.append(memRow());renum();ml.lastElementChild.querySelector('.nik').focus()};
