@@ -104,9 +104,10 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 @media(max-width:360px){.tl .nm{font-size:11px}.tl small{font-size:10px}}
 @keyframes slr{from{opacity:0;transform:translateX(-100%)}to{opacity:1;transform:none}}main{overflow-x:clip}
 .sl{animation:slr .6s cubic-bezier(.22,.8,.3,1) both}
-.tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:12px;line-height:1.2;padding:12px 2px;text-align:center}
+.tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:13.5px;line-height:1.2;padding:12px 2px;text-align:center}
 .tabs button:disabled{opacity:.4;cursor:not-allowed}
 .tbtn{display:inline-flex;align-items:center;gap:6px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1b1d3b;color:#fff;padding:10px 18px;border-radius:24px;z-index:30;font-size:14px;max-width:90vw;text-align:center}
 #sub{position:fixed;inset:0;z-index:15;background:var(--paper);overflow-y:auto;animation:slr .45s cubic-bezier(.22,.8,.3,1) both}
 #sub.out{animation:sout .35s ease-in both;pointer-events:none}
 @keyframes sout{to{transform:translateX(-100%);opacity:0}}
@@ -180,7 +181,7 @@ document.addEventListener('input',e=>{if(e.target.classList.contains('num'))e.ta
 function askConfirm(t,x,yes,lbl='Hapus'){if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML=`<div class="mb" role="dialog" aria-modal="true"><h3>${esc(t)}</h3><p>${esc(x)}</p><button class="btn ghost" id="xn">Batal</button> <button class="btn del" id="xy">${lbl}</button></div>`;document.body.append(d);$('#xn').onclick=()=>d.remove();$('#xy').onclick=()=>{d.remove();yes()}}
 let inApp=false;
 function askExit(){if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML='<div class="mb" role="dialog" aria-modal="true"><h3>Keluar dari akun?</h3><p>Anda akan kembali ke halaman login.</p><button class="btn ghost" id="xn">Batal</button> <button class="btn del" id="xy">Keluar</button></div>';document.body.append(d);$('#xn').onclick=()=>d.remove();$('#xy').onclick=()=>{inApp=false;location.reload()}}
-window.addEventListener('popstate',()=>{if(inApp){if(subOpen){closeSub();return}history.pushState({a:1},'');askExit()}});
+window.addEventListener('popstate',()=>{if(inApp){if(subOpen){if(subCfg.guard&&subCfg.guard()){history.pushState({s:1},'');return}closeSub();return}history.pushState({a:1},'');askExit()}});
 $('#tabs').innerHTML=Object.entries(ROLES).map(([k,v])=>`<button type="button" data-r="${k}" style="--c:${COL[k]}">${ic(IC[k],28)}${v}</button>`).join('');
 function setRole(r){role=r;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.r==r));
  $('#u').placeholder=r!='pusat'?'Nomor HP terdaftar':'Username';
@@ -234,17 +235,20 @@ function donutSvg(l,pr,z,lt,w){const t=l+pr,C=251.33,a=t?l/t*C:0,[cL,cP,x1,x2]=d
 function donutLeg(l,pr,lt){const [cL,cP]=dcol(lt);return `<div class="legend"><span><i class="dot" style="background:${cL}"></i>Laki-laki: <b>${l}</b></span><span><i class="dot" style="background:${cP}"></i>Perempuan: <b>${pr}</b></span></div>`}
 const donut=(l,pr,z=150,lt=false)=>donutSvg(l,pr,z,lt,true)+donutLeg(l,pr,lt);
 const SELIC='<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>';
-const hdr=(l,p,more)=>`<div class="hdc">${donutSvg(l,p,104,true,false)}<div class="hdr">${donutLeg(l,p,true)}${more?`<button class="btn" id="sel" type="button">${ic(SELIC,16)}Selengkapnya</button>`:''}</div></div>`;
+const hdr=(l,p,more,lbl='Selengkapnya',icn=SELIC,id='sel')=>`<div class="hdc">${donutSvg(l,p,104,true,false)}<div class="hdr">${donutLeg(l,p,true)}${more?`<button class="btn" id="${id}" type="button">${ic(icn,16)}${lbl}</button>`:''}</div></div>`;
+const hdrP=(l,p)=>hdr(l,p,true,'Tambah Data',PG,'tb');
+let subCfg={};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),2600)}
 const art='<svg class="bgart" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="2"><circle cx="720" cy="40" r="90"/><circle cx="720" cy="40" r="140"/><path d="M-20 150q200-90 400 0t440-30"/></g></svg>';
 const head=(t,s,x='',c='')=>`<header class="top abs">${art}<div class="row"><div><h1 class="${c}">${t}</h1><small>${s}</small></div><button class="exit" id="ex" type="button" aria-label="Keluar">${ic(EXIT,22)}</button></div>${x}</header>`;
 const form=(id,h)=>`<div class="card hide" id="${id}">${h}</div>`;
 const show=id=>document.querySelectorAll('.pnl').forEach(x=>x.classList.toggle('hide',x.id!=id));
 let subOpen=false,subRet=null;
 const putBack=r=>{if(!r)return;if(r.ph.parentNode)r.ph.replaceWith(r.n);if(r.hid)r.n.classList.add('hide')};
-function openSub(t,h){const o=$('#sub');if(o){o.remove();putBack(subRet);subRet=null}const d=document.createElement('div');d.id='sub';d.innerHTML=`<div class="sh abs">${art}<button class="bk" type="button" aria-label="Kembali">${ic('<path d="M15 18l-6-6 6-6"/>',22)}</button><h2>${t}</h2></div><div class="sb"></div>`;const sb=d.querySelector('.sb');
+function openSub(t,h,cfg={}){subCfg=cfg;const o=$('#sub');if(o){o.remove();putBack(subRet);subRet=null}const d=document.createElement('div');d.id='sub';d.innerHTML=`<div class="sh abs">${art}<button class="bk" type="button" aria-label="Kembali">${ic('<path d="M15 18l-6-6 6-6"/>',22)}</button><h2>${t}</h2></div><div class="sb"></div>`;const sb=d.querySelector('.sb');
  if(typeof h=='string')sb.innerHTML=h;else{subRet={n:h,ph:document.createComment(''),hid:h.classList.contains('hide')};h.before(subRet.ph);h.classList.remove('hide');sb.append(h)}
  document.body.append(d);document.body.style.overflow='hidden';subOpen=true;history.pushState({s:1},'');d.querySelector('.bk').onclick=()=>history.back()}
-function closeSub(){const d=$('#sub'),r=subRet;subRet=null;subOpen=false;document.body.style.overflow='';if(!d)return;d.classList.add('out');setTimeout(()=>{d.remove();putBack(r);offMenu()},380)}
+function closeSub(){const d=$('#sub'),r=subRet,c=subCfg;subRet=null;subCfg={};if(c.onClose)c.onClose();subOpen=false;document.body.style.overflow='';if(!d)return;d.classList.add('out');setTimeout(()=>{d.remove();putBack(r);offMenu()},380)}
 function slide(el){el.classList.remove('sl');void el.offsetWidth;el.classList.add('sl');el.scrollIntoView({behavior:'smooth',block:'start'})}
 const offMenu=()=>document.querySelectorAll('#menu button').forEach(b=>b.classList.remove('on'));
 
@@ -333,7 +337,7 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div><label>Nomor HP</label><input id="hp" inputmode="tel"></div></div>
   <div class="grid2"><div><label>Nama Petugas</label><input id="nm"></div><div><label>NIK</label><input id="nik" class="num" inputmode="numeric" maxlength="16"></div></div>
   <button class="btn" id="sv">Simpan</button> <button class="btn alt" id="sv2">Simpan +</button> <button class="btn ghost hide" id="cx">Batal</button><div class="msg" id="m"></div><div class="scroll" id="ls"></div></div>
- <div class="card pnl hide" id="p_tahapan"><h3 id="tt">Timeline Tahapan</h3><div>
+ <div class="card pnl hide" id="p_tahapan"><h3 id="tt" class="hide"></h3><div>
   <div><label for="tn">Nama Tahapan</label><select id="tn"><option value="">Pilih tahapan</option><option>Pengumuman</option><option>Pendataan</option><option>Pencalonan</option><option>Pemilihan</option><option>Penghitungan</option><option>Penetapan</option></select></div>
   <div class="dua"><div><label>Tanggal Awal</label><input id="ta" type="date"></div><div><label>Tanggal Akhir</label><input id="tb" type="date"></div></div>
   <div class="dua"><div><label>Waktu Awal</label><input id="ja" type="time" value="00:01"></div><div><label>Waktu Akhir</label><input id="jb" type="time" value="23:59"></div></div></div>
@@ -465,10 +469,8 @@ const calonCard=j=>`<div class="card"><h3>Calon Ketua ${j}</h3>
 
 let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
- A.innerHTML=head(esc(S.nama),'RT '+S.rt+' / RW '+S.rw,`<div class="hd" id="dn">${hdr(l,p,false)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}
- <div class="card" id="dw"><div class="rowh"><h3>Daftar Warga</h3><button class="btn" id="tb" type="button">+ Tambah Data</button></div>
-  <div class="msg" id="pm" role="status"></div><div class="scroll" id="kl">Memuat...</div></div>
- <div class="card hide" id="pd"><h3 id="pt">Tambah Data Warga</h3><p class="hint">Semua isian wajib diisi.</p><div class="grid2">
+ A.innerHTML=head(esc(S.nama),'RT '+S.rt+' / RW '+S.rw,`<div class="hd" id="dn">${hdrP(l,p)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}
+ <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><p class="hint">Semua isian wajib diisi.</p><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
  <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"></div><div><label>Alamat</label><input id="al"></div>
  <div><label>No HP Keluarga</label><input id="hk" class="num" inputmode="tel" maxlength="15"></div></div>
@@ -477,43 +479,21 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
  const DENY='Ditolak oleh database. Jalankan bagian kebijakan (policy) pada update_registrasi_warga.sql di Supabase > SQL Editor.';
  const ml=$('#ml'),strip=a=>({nkk:a.nkk,nik:a.nik,nama:a.nama,jk:a.jk,hubungan:a.hubungan,tempat_lahir:a.tempat_lahir,tgl_lahir:a.tgl_lahir,pekerjaan:a.pekerjaan});
  let kk=[],ed=null,old=[],base='',nikV=false;
- // --- Daftar Warga: hanya kepala keluarga (satu baris per NKK)
- const tbl=()=>{
-  const mk='*'.repeat(16),eye=`<button class="eb" id="ke" type="button" aria-label="${nikV?'Sembunyikan':'Tampilkan'} NIK">${ic(nikV?EYEOFF:EYE,16)}</button>`;
-  $('#kl').innerHTML=kk.length?`<table class="ht"><tr><th>Nama Warga<span class="nk">NIK ${eye}</span></th><th>Alamat</th><th class="ag">Agt. Kel.</th><th>Aksi</th></tr>`+kk.map((r,i)=>`<tr${r.nkk==hlKK?' class="new"':''}><td class="nm">${esc(r.nama_kk)}<span class="nk">${nikV?esc(r.nik_kk||'-'):mk}</span></td><td class="al">${esc(r.alamat||'-')}</td><td class="ag">${r.anggota&&r.anggota[0]?r.anggota[0].count:'-'}</td><td class="ak"><button class="btn alt sm" data-e="${i}">Edit</button><button class="btn del sm" data-d="${i}">Hapus</button></td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data warga. Tekan Tambah Data untuk mulai.</p>';
-  const ke=$('#ke');if(ke)ke.onclick=e=>{e.stopPropagation();nikV=!nikV;tbl()}};
- const loadKk=async()=>{const q=c=>sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',S.rw).eq('rt',S.rt).order('nama_kk').limit(500);
-  let r=await q('nkk,nama_kk,nik_kk,alamat,hp,anggota(count)');if(r.error)r=await q('nkk,nama_kk,nik_kk,alamat,hp');
-  kk=r.data||[];if(r.error)$('#kl').innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';else tbl()};
- const refresh=async()=>{const [a,b]=await counts(S);$('#dn').innerHTML=hdr(a,b,false);await loadKk()};
+ const refresh=async()=>{const [a,b]=await counts(S);$('#dn').innerHTML=hdrP(a,b)};
  // --- Form tambah / edit
  const renum=()=>[...ml.children].forEach((d,i)=>d.querySelector('.mh b').textContent='Anggota '+(i+1));
  const vals=()=>[...$('#pd').querySelectorAll('input,select')].map(x=>x.value).join('|');
  const open=(r,ang)=>{ed=r?r.nkk:null;old=ang||[];ml.innerHTML='';['nkk','nkp','nkik','al','hk'].forEach(i=>$('#'+i).value='');
-  if(r){$('#nkk').value=r.nkk;$('#nkp').value=r.nama_kk||'';$('#nkik').value=r.nik_kk||'';$('#al').value=r.alamat||'';$('#hk').value=r.hp||'';(old.length?old:[{}]).forEach(a=>ml.append(memRow(a)))}else ml.append(memRow());
+  if(r){$('#nkk').value=r.nkk;$('#nkp').value=r.nama_kk||'';$('#nkik').value=r.nik_kk||'';$('#al').value=r.alamat||'';$('#hk').value=r.hp||'';(old.length?old:[{}]).forEach(a=>ml.append(memRow(a)))}
   renum();$('#nkk').disabled=!!r;$('#pt').textContent=r?'Edit Data Keluarga':'Tambah Data Warga';$('#sv').textContent=r?'Perbarui':'Simpan';$('#m').textContent='';
-  $('#pd').classList.remove('hide');$('#tb').textContent='Batal';$('#tb').className='btn ghost';base=vals();$('#pd').scrollIntoView({behavior:'smooth'});(r?$('#nkp'):$('#nkk')).focus()};
- const close=()=>{ed=null;old=[];ml.innerHTML='';$('#m').textContent='';$('#nkk').disabled=false;$('#pd').classList.add('hide');$('#tb').textContent='+ Tambah Data';$('#tb').className='btn'};
+  openSub('Tambah Data Pemilih',$('#pd'),{onClose:reset,guard:()=>{if(vals()==base)return false;askConfirm('Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',()=>{base=vals();history.back()},'Ya, batalkan');return true}});base=vals();(r?$('#nkp'):$('#nkk')).focus()};
+ const reset=()=>{ed=null;old=[];ml.innerHTML='';$('#m').textContent='';$('#nkk').disabled=false};const close=()=>history.back();
  const cancel=()=>{if(vals()!=base)askConfirm(ed?'Batalkan perubahan?':'Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',close,'Ya, batalkan');else close()};
- $('#tb').onclick=()=>$('#pd').classList.contains('hide')?open():cancel();
+ $('#dn').onclick=e=>{if(e.target.closest('#tb'))open()};
+ const needAng=()=>{if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML='<div class="mb" role="dialog" aria-modal="true"><h3>Anggota Keluarga</h3><p>Anda wajib menginput anggota keluarga (minimal 1 orang)</p><button class="btn alt" id="xa" type="button">+ Tambah anggota</button></div>';document.body.append(d);$('#xa').onclick=()=>{d.remove();$('#add').click()}};
  $('#cx').onclick=cancel;
  $('#add').onclick=()=>{ml.append(memRow());renum();ml.lastElementChild.querySelector('.nik').focus()};
  ml.onclick=e=>{const b=e.target.closest('.rm');if(!b)return;b.closest('.mem').remove();renum()};
- // --- Aksi Edit / Hapus pada tabel
- $('#kl').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const pm=$('#pm');pm.className='msg';pm.textContent='';
-  if(b.dataset.e!=null){const r=kk[b.dataset.e];b.disabled=true;const {data,error}=await sb.from('anggota').select('*').eq('nkk',r.nkk).order('nama');b.disabled=false;
-   if(error){pm.textContent=error.message;return}
-   if(!$('#pd').classList.contains('hide')&&vals()!=base){askConfirm('Buang isian saat ini?','Isian yang belum disimpan akan diganti dengan data yang akan diedit.',()=>open(r,data||[]),'Lanjutkan');return}
-   open(r,data||[])}
-  else if(b.dataset.d!=null){const r=kk[b.dataset.d];
-   askConfirm('Hapus data warga?','Keluarga '+r.nama_kk+' (NKK '+r.nkk+') beserta seluruh anggotanya akan dihapus permanen.',async()=>{
-    const del=()=>sb.from('keluarga').delete().eq('nkk',r.nkk).eq('kelurahan',S.kelurahan).eq('rw',S.rw).eq('rt',S.rt).select('nkk');
-    let d=await del();
-    if(d.error&&d.error.code=='23503'){const a=await sb.from('anggota').delete().eq('nkk',r.nkk);if(a.error){pm.textContent=a.error.message;return}d=await del()}
-    if(d.error){pm.textContent=d.error.message;return}
-    if(!d.data||!d.data.length){pm.textContent=DENY;return}
-    if(ed==r.nkk)close();
-    await refresh();pm.className='msg ok';pm.textContent='Data keluarga dihapus.'},'Hapus')}};
  // --- Nomor HP KK tidak boleh sama (dicek sejak diisi, dan sekali lagi saat simpan)
  const dupHp=async hp=>{if(!hp)return false;const cur=ed||$('#nkk').value.trim();let q=sb.from('keluarga').select('nkk,nama_kk,kelurahan,rw,rt').eq('hp',hp);if(cur)q=q.neq('nkk',cur);
   const {data}=await q.limit(1);const d=data&&data[0];if(!d)return false;
@@ -525,10 +505,10 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
   const nkk=$('#nkk').value.trim(),nama=$('#nkp').value.trim(),nik=$('#nkik').value.trim(),hp=normHp($('#hk').value),al=$('#al').value.trim();$('#hk').value=hp;
   const ang=[...ml.children].map(d=>({nkk,nik:d.querySelector('.nik').value.trim(),nama:d.querySelector('.nama').value.trim(),jk:d.querySelector('.jk').value,hubungan:d.querySelector('.hub').value,tempat_lahir:d.querySelector('.tl').value.trim(),tgl_lahir:d.querySelector('.tg').value||null,pekerjaan:d.querySelector('.pk').value.trim()}));
   const fail=t=>{m.textContent=/keluarga_hp_unik/.test(t)?'Nomor HP sudah dipakai KK lain. Setiap KK harus memiliki nomor HP sendiri.':t;b.disabled=false};
+  if(!ang.length)return needAng();
   if(nkk.length!=16||!nama||nik.length!=16||!al||!hp){m.textContent='Semua data wajib diisi: NKK dan NIK Kepala Keluarga (16 digit), nama, alamat, dan nomor HP.';return}
   if(hp.length<10){m.textContent='Nomor HP tidak valid (minimal 10 digit).';return}
-  if(!ang.length){m.textContent='Tambahkan minimal satu anggota keluarga.';return}
-  if(ang.some(a=>a.nik.length!=16||!a.nama||!a.jk||!a.hubungan||!a.tempat_lahir||!a.tgl_lahir||!a.pekerjaan)){m.textContent='Semua data anggota wajib diisi: NIK (16 digit), nama, jenis kelamin, hubungan, tempat lahir, tanggal lahir, dan pekerjaan.';return}
+    if(ang.some(a=>a.nik.length!=16||!a.nama||!a.jk||!a.hubungan||!a.tempat_lahir||!a.tgl_lahir||!a.pekerjaan)){m.textContent='Semua data anggota wajib diisi: NIK (16 digit), nama, jenis kelamin, hubungan, tempat lahir, tanggal lahir, dan pekerjaan.';return}
   const ns=ang.map(a=>a.nik);if(new Set(ns).size<ns.length){m.textContent='Ada NIK ganda di dalam form ini.';return}
   b.disabled=true;const was=ed;
   {const dh=await dupHp(hp);if(dh)return fail(dh)}
@@ -547,9 +527,7 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
    if(k.error)return fail(k.error.message);
    if(ang.length){const a=await sb.from('anggota').insert(ang);if(a.error){await sb.from('keluarga').delete().eq('nkk',nkk);return fail(a.error.message)}}
   }
-  b.disabled=false;close();hlKK=nkk;await refresh();hlKK=null;
-  $('#pm').className='msg ok';$('#pm').textContent=was?'Perubahan tersimpan.':'Keluarga tersimpan.';$('#dw').scrollIntoView({behavior:'smooth'})};
- loadKk();
+  b.disabled=false;base=vals();close();await refresh();toast(was?'Perubahan tersimpan.':'Data pemilih tersimpan.')};
 }
 
 function voteFlow(pick,nm,done){
