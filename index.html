@@ -27,7 +27,7 @@ input:focus,select:focus,button:focus-visible{outline:3px solid #eaa63c88;outlin
 .msg{margin-top:10px;font-size:14px;color:#b3261e;min-height:20px}.msg.ok{color:#18794e}
 .hint{font-size:13px;color:#56597a}
 header.top{padding:22px 20px 26px;color:#fff}
-header.top .row{display:flex;justify-content:center;align-items:flex-start;gap:12px;position:relative}
+header.top .row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:relative}
 header.top small{opacity:.85}
 main{max-width:900px;margin:0 auto;padding:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
@@ -41,10 +41,10 @@ main{max-width:900px;margin:0 auto;padding:18px}
 .menu button i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--c);color:#fff}.menu button i svg{width:23px;height:23px}.menu button.on i{outline:3px solid var(--gold);outline-offset:2px}
 .sm{padding:5px 10px;font-size:13px;margin:0 4px 0 0}.btn.del{background:#b3261e;color:#fff}
 .pw{position:relative}.pw input{padding-right:46px}.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}
-.exit{position:absolute;right:0;top:0;margin:0;flex:none;width:40px;height:40px;border-radius:10px;background:#8ecbff5c;border:1px solid #c4e5ffcc;color:#fff;display:grid;place-items:center;cursor:pointer}
-.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:20;padding:20px}.mb{background:#fff;border-radius:14px;padding:22px;max-width:340px;width:100%;text-align:center}.mb p{color:#56597a}.fi{font-weight:400;font-size:11px;opacity:.55;filter:blur(.3px)}.op{font-weight:400;font-size:13px;color:#56597a}.wide[hidden]{display:none}.bdg{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap;background:#e3e5f4;color:#56597a}.bdg.ok{background:#dff3e8;color:#18794e}.ht td.st,.ht th.st{white-space:nowrap}.mact{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}.mact .btn{margin:0}
+.exit{margin:0;flex:none;width:40px;height:40px;border-radius:10px;background:#8ecbff5c;border:1px solid #c4e5ffcc;color:#fff;display:grid;place-items:center;cursor:pointer}
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:20;padding:20px}.mb{background:#fff;border-radius:14px;padding:22px;max-width:340px;width:100%;text-align:center}.mb p{color:#56597a}.nkm{min-height:0;margin-top:4px;font-size:13px}.nkm:empty{display:none}.fi{font-weight:400;font-size:11px;opacity:.55;filter:blur(.3px)}.op{font-weight:400;font-size:13px;color:#56597a}.wide[hidden]{display:none}.bdg{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap;background:#e3e5f4;color:#56597a}.bdg.ok{background:#dff3e8;color:#18794e}.ht td.st,.ht th.st{white-space:nowrap}.mact{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}.mact .btn{margin:0}
 .ttl{font-size:clamp(14px,4.4vw,19px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-header.top .row>div:first-child{min-width:0;flex:1;text-align:center;padding:0 50px}header.top h1{font-size:31px}header.top h1.ttl{font-size:clamp(13px,calc(4.4vw - 1px),18px)}.hd{position:relative;margin-top:10px}.hdc{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:0 20px}.hdc svg{display:block}.hdr .legend{color:#fff;font-size:13px;text-align:left}.hdr .legend span{margin:2px 0;white-space:nowrap}.hdr .btn{margin:8px 0 0;background:#ffffff4d;color:#fff;border-radius:20px;padding:7px 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+header.top .row>div:first-child{min-width:0;flex:1}header.top h1{font-size:31px}header.top h1.ttl{font-size:clamp(13px,calc(4.4vw - 1px),18px)}.hd{position:relative;margin-top:10px}.hdc{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:0 20px}.hdc svg{display:block}.hdr .legend{color:#fff;font-size:13px;text-align:left}.hdr .legend span{margin:2px 0;white-space:nowrap}.hdr .btn{margin:8px 0 0;background:#ffffff4d;color:#fff;border-radius:20px;padding:7px 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
 .r3{display:grid;grid-template-columns:58px 58px minmax(0,1fr);gap:0 10px}.r3 input{padding:10px 8px;font-size:15px}
 select:disabled,input:disabled{background:#eceef8;cursor:not-allowed;color:#8a9a9f}
 @keyframes fl{from{background:#ffe3a0}to{background:transparent}}tr.new td{animation:fl 2.6s}
@@ -107,7 +107,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 .tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:13.5px;line-height:1.2;padding:12px 2px;text-align:center}
 .tabs button:disabled{opacity:.4;cursor:not-allowed}
 .tbtn{display:inline-flex;align-items:center;gap:6px}
-.chev{flex:none;width:34px;height:34px;border:0;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;cursor:pointer}.chev svg{transition:transform .25s}.chev[aria-expanded=true] svg{transform:rotate(180deg)}.clh{cursor:pointer}.cbody{margin-top:4px}
+.chev{flex:none;width:34px;height:34px;border:0;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;cursor:pointer}.chev svg{transition:transform .25s}.chev[aria-expanded=true] svg{transform:rotate(180deg)}.clh{cursor:pointer}.cbody{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .35s ease,opacity .3s ease,margin-top .35s ease,visibility 0s .35s}.cbody.open{grid-template-rows:1fr;opacity:1;visibility:visible;margin-top:4px;transition-delay:0s}.cbody>.ci{overflow:hidden;min-height:0;padding:4px;margin:-4px}
 .btn.ok{background:#2e8b57;color:#fff}.btn.ok.line{background:#fff;color:#2e8b57;border:1.5px solid #2e8b57}.btn.ok::before{content:'';display:inline-block;width:17px;height:17px;margin-right:7px;vertical-align:-3px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat}
 .wide{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:14px;font-size:16px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1b1d3b;color:#fff;padding:10px 18px;border-radius:24px;z-index:30;font-size:14px;max-width:90vw;text-align:center}
@@ -429,14 +429,14 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   if(rk)[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>vm[x.id]=x.n);
   const c=cl.map(x=>({...x,suara:vm[x.id]||0}));
   const proc=(t,st)=>`<h3 style="margin:16px 0 8px">${t}</h3>${st||'<p class="hint">Data belum dapat dimuat.</p>'}`,ck=(j,on,dis,t)=>`<label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer;margin:6px 0"><input type="checkbox" data-j="${j}" style="width:auto" ${on?'checked':''} ${dis?'disabled':''}><span>${t}</span></label>`,pj=j=>mj[j]=='pemilihan';
-  R.innerHTML=note+(pj('RW')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RW '+rw,rk?stat3(rk.rw_kk,rk.rw_memilih):''):hasil('Calon Ketua RW '+rw,c.filter(x=>x.jenis=='RW'))):'')+(pj('RT')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RT '+rt,rk?stat3(rk.rt_kk,rk.rt_memilih):''):hasil('Calon Ketua RT '+rt,c.filter(x=>x.jenis=='RT'&&x.rt==rt))):'')
+  R.innerHTML=note+(pj('RW')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RW '+rw,rk?stat3(rk.rw_kk,rk.rw_memilih):''):hasil('Pemilihan Ketua RW '+esc(rw),c.filter(x=>x.jenis=='RW'))):'')+(pj('RT')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RT '+rt,rk?stat3(rk.rt_kk,rk.rt_memilih):''):hasil('Pemilihan Ketua RT '+esc(rt),c.filter(x=>x.jenis=='RT'&&x.rt==rt))):'')
    +(mode!='pemilihan'?'':`<h3 style="margin:22px 0 4px">Pemungutan Suara Ulang (PSU)</h3><p class="hint">Centang untuk mengaktifkan PSU. Suara yang sudah masuk untuk RT/RW tersebut dihapus seketika setelah Anda mengonfirmasi.</p>${pj('RT')?ck('RT',rk&&rk.psu_rt,!rk,'PSU Ketua RT '+esc(rt)):''}${pj('RW')?ck('RW',rk&&rk.psu_rw,!rk,'PSU Ketua RW '+esc(rw)):''}<div class="msg" id="psm"></div>`);
   if(mode=='pemilihan')document.querySelectorAll('#hres input[data-j]').forEach(el=>el.onchange=()=>{const want=el.checked;el.checked=!want;psuFlow(el.dataset.j,want,rt,rw,rk)})};
  // --- Pendaftaran calon (oleh Kelurahan)
  const cs=()=>sel('c');
  const loadCalon=async j=>{const c=cs();if(!c){$('#l'+j).innerHTML='';return}let q=sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('jenis',j).eq('rw',c.rw);if(j=='RT')q=q.eq('rt',c.rt);const {data}=await q.order('created_at');
   $('#l'+j).innerHTML=(data||[]).map(x=>`<div class="cd"><img src="${esc(x.foto_url)}" alt=""><div style="flex:1;min-width:0"><b>${esc(x.nama)}${ageTxt(x)}</b><br><small>${esc(x.pekerjaan||'')}</small></div><button class="btn del sm" data-x="${x.id}" data-j="${j}" data-n="${esc(x.nama)}">Hapus</button></div>`).join('')};
- $('#p_pencalonan').addEventListener('click',e=>{const h=e.target.closest('.clh');if(!h)return;const was=h.nextElementSibling.classList.contains('hide');document.querySelectorAll('#p_pencalonan .clh').forEach(x=>{const o=x==h&&was;x.nextElementSibling.classList.toggle('hide',!o);x.querySelector('.chev').setAttribute('aria-expanded',String(o))})});
+ $('#p_pencalonan').addEventListener('click',e=>{const h=e.target.closest('.clh');if(!h)return;const was=!h.nextElementSibling.classList.contains('open');document.querySelectorAll('#p_pencalonan .clh').forEach(x=>{const o=x==h&&was;x.nextElementSibling.classList.toggle('open',o);x.querySelector('.chev').setAttribute('aria-expanded',String(o))})});
  $('#p_pencalonan').onchange=e=>{if(e.target.type!='file')return;const j=e.target.id.slice(1),f=e.target.files[0],pv=$('#pv'+j);if(f){pv.src=URL.createObjectURL(f);pv.classList.remove('hide')}else pv.classList.add('hide')};
  $('#p_pencalonan').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.x){askConfirm('Hapus calon?',b.dataset.n+' akan dihapus dari daftar.',async()=>{const {error}=await sb.from('calon').delete().eq('id',b.dataset.x);const m=$('#ms'+b.dataset.j);m.className='msg';m.textContent=error?(error.code=='23503'?'Calon tidak dapat dihapus karena sudah menerima suara.':error.message):'';loadCalon(b.dataset.j)});return}
@@ -456,18 +456,18 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
 }
 
 function memRow(v={}){const d=document.createElement('div');d.className='mem';d.innerHTML=`<div class="mh"><b>Anggota</b><button type="button" class="btn del sm rm">Hapus</button></div><div class="grid2">
- <div><label>NIK</label><input class="nik num" inputmode="numeric" maxlength="16"></div><div><label>Nama</label><input class="nama"></div>
+ <div><label>NIK</label><input class="nik num" inputmode="numeric" maxlength="16"><div class="msg nkm"></div></div><div><label>Nama</label><input class="nama"></div>
  <div><label>Jenis Kelamin</label><select class="jk"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
  <div><label>Hubungan dalam Keluarga</label><select class="hub">${opts(HUB)}</select></div>
  <div><label>Tempat Lahir</label><input class="tl"></div><div><label>Tanggal Lahir</label><input class="tg" type="date"></div>
  <div><label>Pekerjaan</label><input class="pk"></div></div>`;
  const set=(c,x)=>{if(x!=null)d.querySelector(c).value=x};
  set('.nik',v.nik);set('.nama',v.nama);set('.jk',v.jk);set('.hub',v.hubungan);set('.tl',v.tempat_lahir);set('.tg',v.tgl_lahir);set('.pk',v.pekerjaan);return d}
-const calonCard=j=>`<div class="card"><div class="rowh clh"><h3>Calon Ketua ${j}</h3><button type="button" class="chev" aria-expanded="false" aria-label="Tampilkan form Calon Ketua ${j}">${ic('<path d="M6 9l6 6 6-6"/>',20)}</button></div><div class="cbody hide">
+const calonCard=j=>`<div class="card"><div class="rowh clh"><h3>Calon Ketua ${j}</h3><button type="button" class="chev" aria-expanded="false" aria-label="Tampilkan form Calon Ketua ${j}">${ic('<path d="M6 9l6 6 6-6"/>',20)}</button></div><div class="cbody"><div class="ci">
  <label>Upload Foto Calon <span class="fi">(JPG, PNG, WebP, maks 2 MB)</span></label><input type="file" id="f${j}" accept="image/jpeg,image/png,image/webp"><img id="pv${j}" class="pv hide" alt="Pratinjau foto">
  <div class="grid2"><div><label>Nama</label><input id="n${j}"></div><div><label>Pendidikan</label><input id="e${j}"></div><div><label>Pekerjaan</label><input id="k${j}"></div><div><label>Alamat</label><input id="a${j}"></div><div><label>Tanggal Lahir</label><input id="b${j}" type="date"></div></div>
  <label>Visi <span class="op">(opsional)</span></label><textarea id="v${j}" rows="2"></textarea><label>Misi <span class="op">(opsional)</span></label><textarea id="m${j}" rows="3"></textarea><label>Program Kerja <span class="op">(opsional)</span></label><textarea id="g${j}" rows="3"></textarea>
- <button class="btn ok" data-s="${j}">Simpan</button></div><div class="msg" id="ms${j}"></div><div id="l${j}"></div></div>`;
+ <button class="btn ok" data-s="${j}">Simpan</button></div></div><div class="msg" id="ms${j}"></div><div id="l${j}"></div></div>`;
 
 let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
@@ -476,7 +476,7 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
  <section class="flat"><h3>Data Pemilih</h3><div class="scroll" id="dp"></div></section>
  <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><div class="rowh" style="margin-bottom:6px"><p class="hint" style="margin:0">Semua isian wajib diisi.</p><button class="btn ghost sm" id="cx" type="button">Batal</button></div><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
- <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"></div><div><label>Alamat</label><input id="al"></div>
+ <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"><div class="msg nkm"></div></div><div><label>Alamat</label><input id="al"></div>
  <div><label>No HP Keluarga</label><input id="hk" class="num" inputmode="tel" maxlength="15"></div></div>
  <p class="hint hide" id="nh" style="margin:10px 0 0"></p>
  <h3 style="margin-top:18px">Anggota Keluarga</h3><div id="ml"></div>
@@ -491,8 +491,8 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
  const open=(r,ang)=>{if(!r&&!canAdd()){toast('Tambah data hanya tersedia pada tahapan Pendataan.');return}ed=r?r.nkk:null;old=ang||[];ml.innerHTML='';setAdd(null);['nkk','nkp','nkik','al','hk'].forEach(i=>$('#'+i).value='');
   if(r){$('#nkk').value=r.nkk;$('#nkp').value=r.nama_kk||'';$('#nkik').value=r.nik_kk||'';$('#al').value=r.alamat||'';$('#hk').value=r.hp||'';(old.length?old:[{}]).forEach(a=>ml.append(memRow(a)))}
   renum();$('#nkk').disabled=!!r;$('#pt').textContent=r?'Edit Data Keluarga':'Tambah Data Warga';$('#sv').textContent=r?'Perbarui':'Simpan';$('#m').textContent='';
-  openSub('Tambah Data Pemilih',$('#pd'),{onClose:reset,guard:()=>{if(vals()==base)return false;askConfirm('Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',()=>{base=vals();history.back()},'Ya, batalkan');return true}});base=vals();upd();(r?$('#nkp'):$('#nkk')).focus()};
- const reset=()=>{ed=null;old=[];ml.innerHTML='';$('#m').textContent='';$('#nkk').disabled=false;setAdd(null)};const close=()=>history.back();
+  openSub('Input Data KK',$('#pd'),{onClose:reset,guard:()=>{if(vals()==base)return false;askConfirm('Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',()=>{base=vals();history.back()},'Ya, batalkan');return true}});base=vals();upd();(r?$('#nkp'):$('#nkk')).focus()};
+ const reset=()=>{ed=null;old=[];ml.innerHTML='';document.querySelectorAll('#pd .nkm').forEach(x=>x.textContent='');$('#m').textContent='';$('#nkk').disabled=false;setAdd(null)};const close=()=>history.back();
  const cancel=()=>{if(vals()!=base)askConfirm(ed?'Batalkan perubahan?':'Batalkan tambah data?','Isian yang belum disimpan akan dibuang.',close,'Ya, batalkan');else close()};
  $('#dn').onclick=e=>{if(e.target.closest('#tb'))open()};
  $('#tb2').onclick=()=>open();
@@ -506,21 +506,21 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
  // --- NKK sudah ada = tambah anggota keluarga; NIK ganda ditolak
  const setAdd=r=>{addMode=r;[['nkp','nama_kk'],['nkik','nik_kk'],['al','alamat'],['hk','hp']].forEach(([i,f])=>{const e=$('#'+i);e.disabled=!!r;e.value=r?(r[f]||''):''});
   const n=$('#nh');n.classList.toggle('hide',!r);n.textContent=r?'NKK sudah terdaftar atas nama '+r.nama_kk+' ('+r.jml+' anggota tercatat). Data keluarga tidak diubah; isi hanya anggota keluarga yang baru.':'';
-  const h=document.querySelector('#sub .sh h2');if(h)h.textContent=r?'Tambah Anggota Keluarga':'Tambah Data Pemilih'};
+  const h=document.querySelector('#sub .sh h2');if(h)h.textContent=r?'Input Anggota KK':'Input Data KK'};
  const chkNkk=async()=>{const gv=()=>$('#nkk').value.replace(/\D/g,''),v=gv(),m=$('#m');if(ed||v.length!=16){if(addMode)setAdd(null);return}
   const {data}=await sb.from('keluarga').select('nkk,nama_kk,nik_kk,alamat,hp,kelurahan,rw,rt').eq('nkk',v).limit(1);if(gv()!=v)return;const d=data&&data[0];
   if(!d){if(addMode)setAdd(null);return}
   if(d.kelurahan!=S.kelurahan||d.rw!=S.rw||d.rt!=S.rt){setAdd(null);m.className='msg';m.textContent='NKK sudah terdaftar di RT/RW lain, sehingga tidak dapat ditambahkan di sini.';$('#nkk').value='';$('#nkk').focus();upd();return}
   const {count}=await sb.from('anggota').select('nik',{count:'exact',head:true}).eq('nkk',v);if(gv()!=v)return;
   setAdd({...d,jml:count||0});m.textContent='';if(!ml.children.length){ml.append(memRow());renum()}upd();ml.querySelector('.nik').focus()};
- const nikWarn=async el=>{const v=el.value.replace(/\D/g,''),m=$('#m');if(v.length!=16)return;
+ const nikWarn=async el=>{const v=el.value.replace(/\D/g,''),m=el.parentElement.querySelector('.nkm');if(v.length!=16){m.textContent='';return}
   const same=[...ml.querySelectorAll('.nik'),$('#nkik')].filter(x=>x!=el&&!x.disabled&&x.value.replace(/\D/g,'')==v);
   let t=same.length?'NIK '+v+' sudah diisi di form ini.':'';
   if(!t){const [a,k]=await Promise.all([sb.from('anggota').select('nik,nama,nkk').eq('nik',v).limit(1),sb.from('keluarga').select('nik_kk,nama_kk,nkk').eq('nik_kk',v).limit(1)]);
    const x=(a.data||[]).find(r=>r.nkk!=ed),y=(k.data||[]).find(r=>r.nkk!=ed);
    if(x)t='NIK '+v+' sudah terdaftar atas nama '+x.nama+'. NIK ganda ditolak.';else if(y)t='NIK '+v+' sudah terdaftar atas nama '+y.nama_kk+'. NIK ganda ditolak.'}
   if(el.value.replace(/\D/g,'')!=v)return;
-  if(t){m.className='msg';m.textContent=t;el.value='';el.focus();upd()}else if(/^NIK \d{16} sudah/.test(m.textContent))m.textContent=''};
+  if(t){m.className='msg';m.textContent=t;el.value='';el.focus();upd()}else m.textContent=''};
  ml.addEventListener('input',e=>{if(e.target.classList.contains('nik'))nikWarn(e.target)});$('#nkik').addEventListener('input',e=>nikWarn(e.target));$('#nkk').addEventListener('input',chkNkk);
  // --- Tabel Data Pemilih (RT/RW pendata)
  const loadDp=async()=>{const el=$('#dp'),hl=hlKK;hlKK=null;
@@ -528,7 +528,8 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
   let r=await q('nkk,nama_kk,alamat,pass_hash,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat,pass_hash');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
-  el.innerHTML=d.length?`<p class="hint">${d.length} keluarga</p><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="st">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="st">${x.pass_hash?'<span class="bdg ok">Sudah registrasi</span>':'<span class="bdg">Belum</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
+  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count,0);
+  el.innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span>Jumlah KK: <b>${d.length}</b></span><span>Jumlah Jiwa: <b>${jw}</b></span></div><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
  const syncAdd=()=>{const on=canAdd();$('#tb2').hidden=!on;if(on!=!!$('#tb'))refresh()};
  setInterval(syncAdd,30000);loadDp();
  // --- Nomor HP KK tidak boleh sama (dicek sejak diisi, dan sekali lagi saat simpan)
