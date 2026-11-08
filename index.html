@@ -16,7 +16,7 @@ h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;margin:0}
 #logo img,#logo svg{width:100%;height:100%;object-fit:contain}
 @keyframes pop{from{transform:scale(.3) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes pulse{50%{transform:scale(1.06)}}
-#splash footer{position:absolute;bottom:28px;left:0;right:0;padding:0 10px;text-align:center;font-size:clamp(9.5px,2.9vw,13px);white-space:nowrap;opacity:.9}#splash footer b{font-size:clamp(11px,3.4vw,14px)}
+#splash footer{position:absolute;bottom:28px;left:0;right:0;padding:0 10px;text-align:center;font-size:clamp(8.5px,2.6vw,13px);white-space:nowrap;opacity:.9}#splash footer b{font-size:clamp(11px,3.4vw,14px)}
 #login{min-height:100vh;display:grid;place-items:center;padding:20px}
 .box{width:100%;max-width:440px;background:var(--card);border-radius:14px;padding:24px;box-shadow:0 10px 40px #0b2a4333}
 label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
@@ -89,6 +89,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 #tabs.q4{flex-wrap:wrap}#tabs.q4 button{flex:1 1 calc(50% - 3px)}.tabs.wrap{flex-wrap:wrap}.tabs.wrap button{flex:1 1 calc(33.333% - 6px)}
 .cn{display:flex;gap:14px;align-items:center;margin-bottom:6px}.cn img{width:84px;height:84px;border-radius:50%;object-fit:cover;background:#d3dae1;flex:none}.cn b{font-size:17px;font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .cf{margin:10px 0 0}.cf small{display:block;font-weight:600;color:#52666f;font-size:12px}.cf p{margin:2px 0 0;white-space:pre-line}
+.jd{text-align:center;font-style:italic;font-size:15px;line-height:1.3;color:var(--ink);margin:2px 8px 10px}
+#go{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 18px;margin-top:20px;font-size:16px}
+#lm:empty{min-height:0;margin:0}#login .box{padding-bottom:20px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 #ls:not(:empty),#tls:not(:empty){border-top:1px solid var(--line);margin-top:16px;padding-top:6px}
 .vt{width:auto;min-width:100%;border:1px solid var(--line)}.vt th,.vt td{border:1px solid var(--line);white-space:nowrap;text-align:left;padding:7px 14px}.vt th{position:sticky;left:0;background:var(--paper);z-index:1}td.new{animation:fl 2.6s}
@@ -104,19 +107,20 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
   <g fill="#eaa63c" fill-opacity=".35"><circle cx="680" cy="90" r="14"/><circle cx="90" cy="500" r="10"/><rect x="560" y="300" width="26" height="26" transform="rotate(25 573 313)"/></g>
  </svg>
  <div id="logo"><img src="https://res.cloudinary.com/q7sznixw/image/upload/v1794031317/pilei_1_if8flb.webp" alt="Logo Klik Foto" onerror="fb(this)"></div>
- <footer>Platform digital untuk pemilihan Ketua RT/RW tingkat Kelurahan.<br><b>Versi 2.10 &copy; 2026</b></footer>
+ <footer>Platform Elektronik yang Inklusif dan Terintegrasi untuk Pemilihan<br>Ketua RT dan RW serta Pembangunan Basis Data Warga tingkat Kelurahan<br><b>Versi 2.10 &copy; 2026</b></footer>
 </div>
 
 <section id="login" class="abs">
  <svg class="bgart" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="#fff" stroke-opacity=".1" stroke-width="2"><circle cx="700" cy="80" r="130"/><circle cx="80" cy="540" r="160"/></g></svg>
  <div class="box" style="position:relative">
   <div class="lg"><img src="https://res.cloudinary.com/q7sznixw/image/upload/v1794031317/pilei_1_if8flb.webp" alt="Logo" onerror="fb(this)"></div>
+  <div class="jd">Pemilihan Inklusif Lingkungan Elektronik Integratif</div>
   <div class="div">Login sebagai</div>
   <div class="tabs" id="tabs"></div>
   <form id="lf" novalidate>
    <label for="u">Username</label><input id="u" autocomplete="username">
    <label for="p">Password</label><div class="pw"><input id="p" type="password" autocomplete="current-password"><button type="button" class="eye" data-t="p" aria-label="Tampilkan password"></button></div>
-   <button class="btn alt" id="go" type="submit" style="width:100%">Masuk</button>
+   <button class="btn alt" id="go" type="submit" style="width:100%"><span>Masuk</span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg></button>
   </form>
   <form id="rf" class="hide" novalidate>
    <h3 style="margin:2px 0 6px">Registrasi Akun</h3>
