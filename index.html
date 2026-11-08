@@ -347,15 +347,15 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div class="dua"><div><label>Waktu Awal</label><input id="ja" type="time" value="00:01"></div><div><label>Waktu Akhir</label><input id="jb" type="time" value="23:59"></div></div></div>
   <button class="btn ok" id="tsv">Simpan</button> <button class="btn ghost hide" id="tcx">Batal</button><div class="msg" id="tm"></div><div class="scroll" id="tls"></div></div>
  
- <div class="pnl hide" id="p_pencalonan"><div class="card"><div class="dua"><div><label for="crt">RT</label><select id="crt"></select></div><div><label for="crw">RW</label><select id="crw" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
- <div class="pnl hide" id="p_penghitungan"><div class="card"><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div></div><div id="gres"></div></div>
- <div class="card pnl hide" id="p_penetapan"><h3>Calon Terpilih</h3><div class="dua"><div><label for="trt">RT</label><select id="trt"></select></div><div><label for="trw">RW</label><select id="trw" disabled></select></div></div><div id="tres"></div></div></main>`;
+ <div class="pnl hide" id="p_pencalonan"><div class="card"><div class="dua"><div><label for="crw">RW</label><select id="crw"></select></div><div><label for="crt">RT</label><select id="crt" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
+ <div class="pnl hide" id="p_penghitungan"><div class="card"><div class="dua"><div><label for="grw">RW</label><select id="grw"></select></div><div><label for="grt">RT</label><select id="grt" disabled></select></div></div></div><div id="gres"></div></div>
+ <div class="card pnl hide" id="p_penetapan"><h3>Calon Terpilih</h3><div class="dua"><div><label for="trw">RW</label><select id="trw"></select></div><div><label for="trt">RT</label><select id="trt" disabled></select></div></div><div id="tres"></div></div></main>`;
  bindMenu(async k=>{openSub(({pendata:'Pendata Warga',pencalonan:'Pendaftaran Calon',penghitungan:'Penghitungan Suara'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
   if(k=='pendata'){lp();$('#rw').focus()}
-  if(k=='pencalonan'){$('#crt').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT')});loadCalon('RW');loadCalon('RT')}
+  if(k=='pencalonan'){$('#crw').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT')});loadCalon('RW');loadCalon('RT')}
   if(k=='penghitungan'){await pair('g',()=>showHasil('g','penghitungan'));$('#gres').innerHTML=''}
   if(k=='penetapan'){await pair('t',()=>showHasil('t','penetapan'));$('#tres').innerHTML=''}});
- $('#sel').onclick=async()=>{offMenu();openSub('Informasi Data Warga','<div class="card"><div class="dua"><div><label for="drt">RT</label><select id="drt"></select></div><div><label for="drw">RW</label><select id="drw" disabled></select></div></div><div id="dres"></div></div>');await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
+ $('#sel').onclick=async()=>{offMenu();openSub('Informasi Data Warga','<div class="card"><div class="dua"><div><label for="drw">RW</label><select id="drw"></select></div><div><label for="drt">RT</label><select id="drt" disabled></select></div></div><div id="dres"></div></div>');await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
  $('#tbtn').onclick=()=>{offMenu();openSub('Timeline Tahapan',$('#p_tahapan'));lt()};
  // --- Pendata warga (registrasi petugas)
  let rows=[],ed=null,lastRw='',hl=null;
@@ -397,8 +397,8 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  // --- Pilihan RT & RW (sebaris), dipakai Pendataan, Pencalonan, dan Pemilihan
  const sel=q=>{const rt=$('#'+q+'rt').value,rw=$('#'+q+'rw').value;return rt&&rw?{rt,rw}:null};
  const pair=async(q,cb)=>{const {data}=await sb.from('petugas').select('rt,rw').eq('kelurahan',S.kelurahan),d=data||[],rt=$('#'+q+'rt'),rw=$('#'+q+'rw');
-  rt.innerHTML=opts([...new Set(d.map(r=>r.rt))].sort());rw.innerHTML=opts([]);rw.disabled=true;
-  rt.onchange=()=>{rw.innerHTML=opts([...new Set(d.filter(r=>r.rt==rt.value).map(r=>r.rw))].sort());rw.disabled=!rt.value;cb()};rw.onchange=cb};
+  rw.innerHTML=opts([...new Set(d.map(r=>r.rw))].sort());rt.innerHTML=opts([]);rt.disabled=true;
+  rw.onchange=()=>{rt.innerHTML=opts([...new Set(d.filter(r=>r.rw==rw.value).map(r=>r.rt))].sort());rt.disabled=!rw.value;cb()};rt.onchange=cb};
  // --- Informasi pendataan: donut RT dan RW sebaris
  const showData=async()=>{const c=sel('d');if(!c){$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>';return}
   const [rl,rp]=await counts({kelurahan:S.kelurahan,rw:c.rw,rt:c.rt}),[wl,wp]=await counts({kelurahan:S.kelurahan,rw:c.rw},false);
@@ -621,13 +621,13 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
   else{const vm={};[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>vm[x.id]=x.n);
    const wv=cal.map(x=>({...x,suara:vm[x.id]||0})),rl=wv.filter(x=>x.jenis=='RT'),wl=wv.filter(x=>x.jenis=='RW');
    const a=mj.RT=='pemilihan'?terp('Ketua RT '+esc(S.rt),rl):'',b=mj.RW=='pemilihan'?terp('Ketua RW '+esc(S.rw),wl):'';
-   if(since<=TERPILIH_JAM*36e5&&(a||b))sect+=`<div class="cel" id="cel"><h2>Selamat!</h2><p>Selamat kepada calon terpilih. Terima kasih atas partisipasi seluruh warga.</p><div class="row2">${a}${b}</div></div>`;
-   sect+=`<div class="card" id="hsl"><h3>Informasi Hasil Pemilihan</h3>${mj.RT=='pemilihan'?hasil('Calon Ketua RT '+esc(S.rt),rl,stat3(rk.rt_kk,rk.rt_memilih)):''}${mj.RW=='pemilihan'?hasil('Calon Ketua RW '+esc(S.rw),wl,stat3(rk.rw_kk,rk.rw_memilih)):''}</div>`}}
+   if(a||b)sect+=`<div class="cel" id="cel"><h2>Selamat!</h2><p>Selamat kepada calon terpilih. Terima kasih atas partisipasi seluruh warga.</p><div class="row2">${a}${b}</div></div>`;
+   if(!a&&!b)sect='<div class="card"><p class="hint">Calon terpilih belum dapat ditampilkan.</p></div>'}}
  else if(phase=='belum')sect='<div class="card"><p class="hint">Tahapan pemilihan belum dimulai.</p></div>';
  else sect='<div class="card"><p class="hint">Pemungutan suara di lingkungan ini sedang tidak berlangsung.</p></div>';
  if(anyP&&!open)sect=extra+sect;
  const WM=[['pencalonan','Informasi Calon',I_CLN,'#7b3fa0'],['pemilihan','Ayo Memilih',I_PIL,'#c0392b'],['penghitungan','Perolehan Suara',I_HIT,'#2e8b57'],['penetapan','Calon Terpilih',I_TET,'#d9822b']];
- const wbtn=WM.filter(([k])=>entered(tlW,k)||(k=='pemilihan'&&open)).map(x=>x[0]);
+ const wbtn=WM.filter(([k])=>(entered(tlW,k)&&(k!='pemilihan'||phase=='aktif'))||(k=='pemilihan'&&open)).map(x=>x[0]);
  const wmenu=`<section class="flat"><h3>Fitur Utama</h3><div class="tabs wrap w4" id="menu">${WM.map(([k,t,i,c])=>`<button type="button" data-k="${k}" style="--c:${c}"${wbtn.includes(k)?'':' disabled'}>${ic(i,34)}${t}</button>`).join('')}</div></section>`;
  const cf=(l,v,c='')=>v?`<div class="cf ${c}"><small>${l}</small><p>${esc(v)}</p></div>`:'';
  const cn=x=>`<div class="card"><div class="cn"><img src="${esc(x.foto_url)}" alt="Foto ${esc(x.nama)}"><div><b>${esc(x.nama)}${ageTxt(x)}</b></div></div><div class="tri">${cf('Pekerjaan',x.pekerjaan)}${cf('Pendidikan',x.pendidikan)}${cf('Alamat',x.alamat)}</div>${cf('Visi',x.visi,'vi')}${cf('Misi',x.misi)}${cf('Program Kerja',x.program)}</div>`;
@@ -635,7 +635,7 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
  const wcal=`<div class="pnl hide" id="p_pencalonan">${cb('Calon Ketua RT '+esc(S.rt),rtL)}${cb('Calon Ketua RW '+esc(S.rw),rwL)}</div>`;
 
  const wvm={};if(rk)[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>wvm[x.id]=x.n);const rok=!!rk&&!psu;
- const whit=['RW','RT'].map(j=>mj[j]!='pemilihan'?`<div class="card"><p class="hint">${esc(un[j])}: ${mj[j]=='aklamasi'?'hanya satu calon, <b>'+esc(jl[j][0].nama)+'</b> (terpilih aklamasi). Tidak ada pemilihan dan penghitungan, hanya penetapan.':'tidak ada calon yang terdaftar: tidak ada pemilihan, penghitungan, dan penetapan.'}</p></div>`:rok?'<div class="card hs">'+hasil('Pemilihan Ketua '+j+' '+esc(j=='RT'?S.rt:S.rw),jl[j].map(x=>({...x,suara:wvm[x.id]||0})))+'</div>':'').join('');
+ const whit=['RW','RT'].map(j=>mj[j]!='pemilihan'?`<div class="card"><p class="hint">${esc(un[j])}: ${mj[j]=='aklamasi'?'hanya satu calon, <b>'+esc(jl[j][0].nama)+'</b> (terpilih aklamasi). Tidak ada pemilihan dan penghitungan, hanya penetapan.':'tidak ada calon yang terdaftar: tidak ada pemilihan, penghitungan, dan penetapan.'}</p></div>`:rok?'<div class="card hs">'+hasil('Pemilihan Ketua '+j+' '+esc(j=='RT'?S.rt:S.rw),jl[j].map(x=>({...x,suara:wvm[x.id]||0})),stat3(rk[j.toLowerCase()+'_kk'],rk[j.toLowerCase()+'_memilih']))+'</div>':'').join('');
  const wsub=anyP&&!rok?`<div class="card"><p class="hint">${psu?'Perolehan suara ditampilkan setelah PSU selesai.':'Perolehan suara ditampilkan setelah tahapan pemilihan selesai.'}</p></div>`:'';
  const wdat=`<div class="pnl hide" id="p_hitung">${whit}${wsub}</div>`;
  A.innerHTML=head(esc(S.nama_kk),'NIK <span id="nk">'+mask+'</span><button class="eb" id="ne" type="button" aria-label="Tampilkan NIK">'+ic(EYE,18)+'</button>',`<div class="hd" id="dn">${hdr(l,p,true)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}${wmenu}<div class="pnl${wbtn.length?' hide':''}" id="p_sect">${sect}</div>${wcal}${wdat}
