@@ -94,7 +94,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 #go{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 18px;margin-top:20px;font-size:16px}
 #lm:empty{min-height:0;margin:0}#login .box{padding-bottom:20px}#login .box{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.55)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-#ls:not(:empty),#tls:not(:empty){border-top:1px solid var(--line);margin-top:16px;padding-top:6px}
+#tls:not(:empty){border-top:1px solid var(--line);margin-top:16px;padding-top:6px}
 .vt{width:auto;min-width:100%;border:1px solid var(--line)}.vt th,.vt td{border:1px solid var(--line);white-space:nowrap;text-align:left;padding:7px 14px}.vt th{position:sticky;left:0;background:var(--paper);z-index:1}td.new{animation:fl 2.6s}
 #dw{background:none;border:0;border-radius:0;padding:0}
 #dw .rowh{padding:0 2px}
@@ -107,6 +107,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 .tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:13.5px;line-height:1.2;padding:12px 2px;text-align:center}
 .tabs button:disabled{opacity:.4;cursor:not-allowed}
 .tbtn{display:inline-flex;align-items:center;gap:6px}
+.chev{flex:none;width:34px;height:34px;border:0;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;cursor:pointer}.chev svg{transition:transform .25s}.chev[aria-expanded=true] svg{transform:rotate(180deg)}.clh{cursor:pointer}.cbody{margin-top:4px}
 .btn.ok{background:#2e8b57;color:#fff}.btn.ok.line{background:#fff;color:#2e8b57;border:1.5px solid #2e8b57}.btn.ok::before{content:'';display:inline-block;width:17px;height:17px;margin-right:7px;vertical-align:-3px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021H5a2%202%200%2001-2-2V5a2%202%200%20012-2h11l5%205v11a2%202%200%2001-2%202z'/%3E%3Cpath%20d='M17%2021v-8H7v8M7%203v5h8'/%3E%3C/svg%3E") center/contain no-repeat}
 .wide{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 16px;padding:14px;font-size:16px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1b1d3b;color:#fff;padding:10px 18px;border-radius:24px;z-index:30;font-size:14px;max-width:90vw;text-align:center}
@@ -333,7 +334,7 @@ const tbBtn=n=>`<button class="btn alt sm tbtn" id="tbtn" type="button">${ic(I_C
 
 async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
  A.innerHTML=head('Kelurahan '+esc(S.kelurahan),'Kec. '+esc(S.kecamatan)+' · '+esc(S.kota),`<div class="hd" id="dn">${hdr(l,p,true)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl),tbBtn(tl.length))}${menuHtml(KM,tl)}
- <div class="card pnl hide" id="p_pendata"><h3 id="pt">Pendata Warga</h3><div class="r3">
+ <div class="card pnl hide" id="p_pendata"><h3 id="pt" class="hide"></h3><div class="r3">
   <div><label>RW</label><input id="rw" class="num" inputmode="numeric" maxlength="3" placeholder="01"></div>
   <div><label>RT</label><input id="rt" class="num" inputmode="numeric" maxlength="3" placeholder="01"></div>
   <div><label>Nomor HP</label><input id="hp" inputmode="tel"></div></div>
@@ -345,11 +346,11 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div class="dua"><div><label>Waktu Awal</label><input id="ja" type="time" value="00:01"></div><div><label>Waktu Akhir</label><input id="jb" type="time" value="23:59"></div></div></div>
   <button class="btn ok" id="tsv">Simpan</button> <button class="btn ghost hide" id="tcx">Batal</button><div class="msg" id="tm"></div><div class="scroll" id="tls"></div></div>
  
- <div class="pnl hide" id="p_pencalonan"><h3 style="margin:2px 0 12px">Pendaftaran Calon</h3><div class="card"><div class="dua"><div><label for="crt">RT</label><select id="crt"></select></div><div><label for="crw">RW</label><select id="crw" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
- <div class="card pnl hide" id="p_pemilihan"><h3>Hasil Pemilihan</h3><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
- <div class="card pnl hide" id="p_penghitungan"><h3>Penghitungan Suara</h3><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div><div id="gres"></div></div>
+ <div class="pnl hide" id="p_pencalonan"><div class="card"><div class="dua"><div><label for="crt">RT</label><select id="crt"></select></div><div><label for="crw">RW</label><select id="crw" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
+ <div class="card pnl hide" id="p_pemilihan"><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
+ <div class="card pnl hide" id="p_penghitungan"><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div><div id="gres"></div></div>
  <div class="card pnl hide" id="p_penetapan"><h3>Calon Terpilih</h3><div class="dua"><div><label for="trt">RT</label><select id="trt"></select></div><div><label for="trw">RW</label><select id="trw" disabled></select></div></div><div id="tres"></div></div></main>`;
- bindMenu(async k=>{openSub(KM.find(x=>x[0]==k)[1],$('#p_'+k));
+ bindMenu(async k=>{openSub(({pendata:'Tim Pendata Warga',pencalonan:'Pendaftaran Calon',pemilihan:'Proses Pemilihan',penghitungan:'Hasil Pemilihan Suara'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
   if(k=='pendata'){lp();$('#rw').focus()}
   if(k=='pencalonan'){$('#crt').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT')});loadCalon('RW');loadCalon('RT')}
   if(k=='pemilihan'){$('#hrt').focus();await pair('h',()=>showHasil());$('#hres').innerHTML=''}
@@ -429,14 +430,15 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   const rp=await sb.rpc('rekap_pemilihan',{p_kel:S.kelurahan,p_rw:rw,p_rt:rt}),rk=!rp.error&&rp.data?rp.data:null,vm={};
   if(rk)[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>vm[x.id]=x.n);
   const c=cl.map(x=>({...x,suara:vm[x.id]||0}));
-  const ck=(j,on,dis,t)=>`<label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer;margin:6px 0"><input type="checkbox" data-j="${j}" style="width:auto" ${on?'checked':''} ${dis?'disabled':''}><span>${t}</span></label>`,pj=j=>mj[j]=='pemilihan';
-  R.innerHTML=note+(pj('RW')?hasil('Calon Ketua RW '+rw,c.filter(x=>x.jenis=='RW'),rk?stat3(rk.rw_kk,rk.rw_memilih):''):'')+(pj('RT')?hasil('Calon Ketua RT '+rt,c.filter(x=>x.jenis=='RT'&&x.rt==rt),rk?stat3(rk.rt_kk,rk.rt_memilih):''):'')
+  const proc=(t,st)=>`<h3 style="margin:16px 0 8px">${t}</h3>${st||'<p class="hint">Data belum dapat dimuat.</p>'}`,ck=(j,on,dis,t)=>`<label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer;margin:6px 0"><input type="checkbox" data-j="${j}" style="width:auto" ${on?'checked':''} ${dis?'disabled':''}><span>${t}</span></label>`,pj=j=>mj[j]=='pemilihan';
+  R.innerHTML=note+(pj('RW')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RW '+rw,rk?stat3(rk.rw_kk,rk.rw_memilih):''):hasil('Calon Ketua RW '+rw,c.filter(x=>x.jenis=='RW'))):'')+(pj('RT')?(mode=='pemilihan'?proc('Pemungutan Suara Ketua RT '+rt,rk?stat3(rk.rt_kk,rk.rt_memilih):''):hasil('Calon Ketua RT '+rt,c.filter(x=>x.jenis=='RT'&&x.rt==rt))):'')
    +(mode!='pemilihan'?'':`<h3 style="margin:22px 0 4px">Pemungutan Suara Ulang (PSU)</h3><p class="hint">Centang untuk mengaktifkan PSU. Suara yang sudah masuk untuk RT/RW tersebut dihapus seketika setelah Anda mengonfirmasi.</p>${pj('RT')?ck('RT',rk&&rk.psu_rt,!rk,'PSU Ketua RT '+esc(rt)):''}${pj('RW')?ck('RW',rk&&rk.psu_rw,!rk,'PSU Ketua RW '+esc(rw)):''}<div class="msg" id="psm"></div>`);
   if(mode=='pemilihan')document.querySelectorAll('#hres input[data-j]').forEach(el=>el.onchange=()=>{const want=el.checked;el.checked=!want;psuFlow(el.dataset.j,want,rt,rw,rk)})};
  // --- Pendaftaran calon (oleh Kelurahan)
  const cs=()=>sel('c');
  const loadCalon=async j=>{const c=cs();if(!c){$('#l'+j).innerHTML='';return}let q=sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('jenis',j).eq('rw',c.rw);if(j=='RT')q=q.eq('rt',c.rt);const {data}=await q.order('created_at');
   $('#l'+j).innerHTML=(data||[]).map(x=>`<div class="cd"><img src="${esc(x.foto_url)}" alt=""><div style="flex:1;min-width:0"><b>${esc(x.nama)}${ageTxt(x)}</b><br><small>${esc(x.pekerjaan||'')}</small></div><button class="btn del sm" data-x="${x.id}" data-j="${j}" data-n="${esc(x.nama)}">Hapus</button></div>`).join('')};
+ $('#p_pencalonan').addEventListener('click',e=>{const h=e.target.closest('.clh');if(!h)return;const x=h.nextElementSibling.classList.toggle('hide');h.querySelector('.chev').setAttribute('aria-expanded',String(!x))});
  $('#p_pencalonan').onchange=e=>{if(e.target.type!='file')return;const j=e.target.id.slice(1),f=e.target.files[0],pv=$('#pv'+j);if(f){pv.src=URL.createObjectURL(f);pv.classList.remove('hide')}else pv.classList.add('hide')};
  $('#p_pencalonan').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.x){askConfirm('Hapus calon?',b.dataset.n+' akan dihapus dari daftar.',async()=>{const {error}=await sb.from('calon').delete().eq('id',b.dataset.x);const m=$('#ms'+b.dataset.j);m.className='msg';m.textContent=error?(error.code=='23503'?'Calon tidak dapat dihapus karena sudah menerima suara.':error.message):'';loadCalon(b.dataset.j)});return}
@@ -463,11 +465,11 @@ function memRow(v={}){const d=document.createElement('div');d.className='mem';d.
  <div><label>Pekerjaan</label><input class="pk"></div></div>`;
  const set=(c,x)=>{if(x!=null)d.querySelector(c).value=x};
  set('.nik',v.nik);set('.nama',v.nama);set('.jk',v.jk);set('.hub',v.hubungan);set('.tl',v.tempat_lahir);set('.tg',v.tgl_lahir);set('.pk',v.pekerjaan);return d}
-const calonCard=j=>`<div class="card"><h3>Calon Ketua ${j}</h3>
+const calonCard=j=>`<div class="card"><div class="rowh clh"><h3>Calon Ketua ${j}</h3><button type="button" class="chev" aria-expanded="false" aria-label="Tampilkan form Calon Ketua ${j}">${ic('<path d="M6 9l6 6 6-6"/>',20)}</button></div><div class="cbody hide">
  <label>Upload Foto Calon (JPG, PNG, WebP, maks 2 MB)</label><input type="file" id="f${j}" accept="image/jpeg,image/png,image/webp"><img id="pv${j}" class="pv hide" alt="Pratinjau foto">
  <div class="grid2"><div><label>Nama</label><input id="n${j}"></div><div><label>Pendidikan</label><input id="e${j}"></div><div><label>Pekerjaan</label><input id="k${j}"></div><div><label>Alamat</label><input id="a${j}"></div><div><label>Tanggal Lahir</label><input id="b${j}" type="date"></div></div>
  <label>Visi</label><textarea id="v${j}" rows="2"></textarea><label>Misi</label><textarea id="m${j}" rows="3"></textarea><label>Program Kerja</label><textarea id="g${j}" rows="3"></textarea>
- <button class="btn" data-s="${j}">Simpan</button><div class="msg" id="ms${j}"></div><div id="l${j}"></div></div>`;
+ <button class="btn ok" data-s="${j}">Simpan</button></div><div class="msg" id="ms${j}"></div><div id="l${j}"></div></div>`;
 
 let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
