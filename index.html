@@ -239,9 +239,12 @@ const art='<svg class="bgart" viewBox="0 0 800 200" preserveAspectRatio="xMidYMi
 const head=(t,s,x='',c='')=>`<header class="top abs">${art}<div class="row"><div><h1 class="${c}">${t}</h1><small>${s}</small></div><button class="exit" id="ex" type="button" aria-label="Keluar">${ic(EXIT,22)}</button></div>${x}</header>`;
 const form=(id,h)=>`<div class="card hide" id="${id}">${h}</div>`;
 const show=id=>document.querySelectorAll('.pnl').forEach(x=>x.classList.toggle('hide',x.id!=id));
-let subOpen=false;
-function openSub(t,h){const o=$('#sub');if(o)o.remove();const d=document.createElement('div');d.id='sub';d.innerHTML=`<div class="sh abs">${art}<button class="bk" type="button" aria-label="Kembali">${ic('<path d="M15 18l-6-6 6-6"/>',22)}</button><h2>${t}</h2></div><div class="sb">${h}</div>`;document.body.append(d);document.body.style.overflow='hidden';subOpen=true;history.pushState({s:1},'');d.querySelector('.bk').onclick=()=>history.back()}
-function closeSub(){const d=$('#sub');subOpen=false;document.body.style.overflow='';if(!d)return;d.classList.add('out');setTimeout(()=>d.remove(),380)}
+let subOpen=false,subRet=null;
+const putBack=r=>{if(!r)return;if(r.ph.parentNode)r.ph.replaceWith(r.n);if(r.hid)r.n.classList.add('hide')};
+function openSub(t,h){const o=$('#sub');if(o){o.remove();putBack(subRet);subRet=null}const d=document.createElement('div');d.id='sub';d.innerHTML=`<div class="sh abs">${art}<button class="bk" type="button" aria-label="Kembali">${ic('<path d="M15 18l-6-6 6-6"/>',22)}</button><h2>${t}</h2></div><div class="sb"></div>`;const sb=d.querySelector('.sb');
+ if(typeof h=='string')sb.innerHTML=h;else{subRet={n:h,ph:document.createComment(''),hid:h.classList.contains('hide')};h.before(subRet.ph);h.classList.remove('hide');sb.append(h)}
+ document.body.append(d);document.body.style.overflow='hidden';subOpen=true;history.pushState({s:1},'');d.querySelector('.bk').onclick=()=>history.back()}
+function closeSub(){const d=$('#sub'),r=subRet;subRet=null;subOpen=false;document.body.style.overflow='';if(!d)return;d.classList.add('out');setTimeout(()=>{d.remove();putBack(r);offMenu()},380)}
 function slide(el){el.classList.remove('sl');void el.offsetWidth;el.classList.add('sl');el.scrollIntoView({behavior:'smooth',block:'start'})}
 const offMenu=()=>document.querySelectorAll('#menu button').forEach(b=>b.classList.remove('on'));
 
@@ -340,14 +343,14 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  <div class="card pnl hide" id="p_pemilihan"><h3>Hasil Pemilihan</h3><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
  <div class="card pnl hide" id="p_penghitungan"><h3>Penghitungan Suara</h3><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div><div id="gres"></div></div>
  <div class="card pnl hide" id="p_penetapan"><h3>Calon Terpilih</h3><div class="dua"><div><label for="trt">RT</label><select id="trt"></select></div><div><label for="trw">RW</label><select id="trw" disabled></select></div></div><div id="tres"></div></div></main>`;
- bindMenu(async k=>{show('p_'+k);
+ bindMenu(async k=>{openSub(KM.find(x=>x[0]==k)[1],$('#p_'+k));
   if(k=='pendata'){lp();$('#rw').focus()}
   if(k=='pencalonan'){$('#crt').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT')});loadCalon('RW');loadCalon('RT')}
   if(k=='pemilihan'){$('#hrt').focus();await pair('h',()=>showHasil());$('#hres').innerHTML=''}
   if(k=='penghitungan'){await pair('g',()=>showHasil('g','penghitungan'));$('#gres').innerHTML=''}
   if(k=='penetapan'){await pair('t',()=>showHasil('t','penetapan'));$('#tres').innerHTML=''}});
- $('#sel').onclick=async()=>{offMenu();show('');openSub('Informasi Data Warga','<div class="card"><div class="dua"><div><label for="drt">RT</label><select id="drt"></select></div><div><label for="drw">RW</label><select id="drw" disabled></select></div></div><div id="dres"></div></div>');await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
- $('#tbtn').onclick=()=>{offMenu();show('p_tahapan');lt();$('#p_tahapan').scrollIntoView({behavior:'smooth'})};
+ $('#sel').onclick=async()=>{offMenu();openSub('Informasi Data Warga','<div class="card"><div class="dua"><div><label for="drt">RT</label><select id="drt"></select></div><div><label for="drw">RW</label><select id="drw" disabled></select></div></div><div id="dres"></div></div>');await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
+ $('#tbtn').onclick=()=>{offMenu();openSub('Timeline Tahapan',$('#p_tahapan'));lt()};
  // --- Pendata warga (registrasi petugas)
  let rows=[],ed=null,lastRw='',hl=null;
  const lp=async()=>{const {data}=await sb.from('petugas').select('*').eq('kelurahan',S.kelurahan).order('created_at',{ascending:false});rows=data||[];
@@ -611,23 +614,21 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
  A.innerHTML=head(esc(S.nama_kk),'NIK <span id="nk">'+mask+'</span><button class="eb" id="ne" type="button" aria-label="Tampilkan NIK">'+ic(EYE,18)+'</button>',`<div class="hd" id="dn">${hdr(l,p,true)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}${wmenu}<div class="pnl${wbtn.length?' hide':''}" id="p_sect">${sect}</div>${wcal}${wdat}
  <section class="flat"><h3>Data Keluarga</h3><div class="scroll"><table class="ht"><tr><th>Nama</th><th>Hubungan</th><th>JK</th></tr>${(data||[]).map(r=>`<tr><td>${esc(r.nama)}</td><td>${esc(r.hubungan||'')}</td><td>${r.jk}</td></tr>`).join('')}</table></div></section></main>`;
  $('#ne').onclick=()=>{vis=!vis;$('#nk').textContent=vis?(S.nik_kk||'-'):mask;$('#ne').innerHTML=ic(vis?EYEOFF:EYE,18);$('#ne').setAttribute('aria-label',vis?'Sembunyikan NIK':'Tampilkan NIK')};
- $('#sel').onclick=()=>{offMenu();show('');openSub('Informasi Data Pemilih','<div class="card"><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT '+esc(S.rt)+' / RW '+esc(S.rw)+'</option><option value="rw">Seluruh RW '+esc(S.rw)+'</option></select><div class="scroll" id="pdl" style="margin-top:12px"></div></div>');$('#pds').onchange=loadPd;loadPd()};
+ $('#sel').onclick=()=>{offMenu();openSub('Informasi Data Pemilih','<div class="card"><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT '+esc(S.rt)+' / RW '+esc(S.rw)+'</option><option value="rw">Seluruh RW '+esc(S.rw)+'</option></select><div class="scroll" id="pdl" style="margin-top:12px"></div></div>');$('#pds').onchange=loadPd;loadPd()};
  const loadPd=async()=>{const el=$('#pdl'),rtOnly=$('#pds').value=='rt';el.innerHTML='Memuat...';
   const q=c=>{let r=sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',S.rw);if(rtOnly)r=r.eq('rt',S.rt);return r.order('nama_kk').limit(500)};
   let r=await q('nkk,nama_kk,alamat,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
   el.innerHTML=d.length?`<p class="hint">${d.length} keluarga</p><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data warga.</p>'};
- if(wbtn.length){bindMenu(k=>{show(k=='pencalonan'?'p_pencalonan':'p_sect')});
-  const nw=new Date(),last=k=>Math.max(0,...tlW.filter(t=>kind(t)==k&&nw>=tStart(t)).map(t=>tStart(t).getTime())),df=wbtn.reduce((a,k)=>last(k)>=last(a)?k:a);
-  $('#menu button[data-k="'+df+'"]').click()}
+ if(wbtn.length){bindMenu(k=>openSub(WM.find(x=>x[0]==k)[1],$(k=='pencalonan'?'#p_pencalonan':'#p_sect')));}
  const vt=$('#vt');
  if(vt){const need=[st.boleh_rt&&'RT',st.boleh_rw&&'RW'].filter(Boolean),vs=$('#vs');
   vt.onclick=e=>{const c=e.target.closest('.cc');if(!c)return;const j=c.dataset.j,on=c.getAttribute('aria-pressed')=='true';
    vt.querySelectorAll('.cc[data-j="'+j+'"]').forEach(x=>x.setAttribute('aria-pressed','false'));
    if(on)pick[j]=null;else{c.setAttribute('aria-pressed','true');pick[j]=c.dataset.id}
    if(vs)vs.disabled=!need.length||need.some(k=>!pick[k])};
-  if(vs)vs.onclick=()=>voteFlow(pick,Object.fromEntries(cal.map(x=>[x.id,x.nama])),()=>warga(A))}}
+  if(vs)vs.onclick=()=>voteFlow(pick,Object.fromEntries(cal.map(x=>[x.id,x.nama])),()=>{closeSub();warga(A).then(()=>{const b=$('#menu [data-k=pemilihan]');if(b&&!b.disabled)b.click()})})}}
 
 // --- Timeline: baris membungkus ke bawah, penghubung berbelok kembali ke kiri layar
 let tlq=0;const tlObs=new MutationObserver(()=>{cancelAnimationFrame(tlq);tlq=requestAnimationFrame(tlLayout)});
