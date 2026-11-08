@@ -376,15 +376,15 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  const showHasil=async()=>{const hh=sel('h');if(!hh){$('#hres').innerHTML='';return}const {rt,rw}=hh;
   const {data}=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',rw);
   const cl=data||[],ct=cl.filter(x=>x.jenis=='RT'&&x.rt==rt),cw=cl.filter(x=>x.jenis=='RW');
-  const mode=!ct.length&&!cw.length?'a':((ct.length==1&&!cw.length)||(!ct.length&&cw.length==1))?'b':'c';
-  if(mode=='a'){$('#hres').innerHTML=`<p class="hint">Tidak ada Pemilihan di RT ${esc(rt)} RW ${esc(rw)} ini: belum ada calon RT maupun RW yang terdaftar.</p>`;return}
-  if(mode=='b'){const w=ct.length?ct[0]:cw[0];$('#hres').innerHTML=`<p class="hint">Tidak ada proses pemilihan dan penghitungan di RT ${esc(rt)} RW ${esc(rw)} ini, hanya penetapan. Hanya ada satu calon Ketua ${w.jenis} ${esc(w.jenis=='RT'?rt:rw)}: <b>${esc(w.nama)}</b> (terpilih aklamasi).</p>`;return}
+  const md=n=>n?n==1?'aklamasi':'pemilihan':'tidak',mj={RT:md(ct.length),RW:md(cw.length)},lc={RT:ct,RW:cw},uk={RT:'Ketua RT '+rt,RW:'Ketua RW '+rw};
+  const note=['RW','RT'].filter(j=>mj[j]!='pemilihan').map(j=>mj[j]=='aklamasi'?`<p class="hint">${esc(uk[j])}: hanya satu calon, <b>${esc(lc[j][0].nama)}</b> (terpilih aklamasi). Tidak ada pemilihan dan penghitungan, hanya penetapan.</p>`:`<p class="hint">Tidak ada calon ${esc(uk[j])} yang terdaftar: tidak ada pemilihan, penghitungan, dan penetapan.</p>`).join('');
+  if(mj.RT!='pemilihan'&&mj.RW!='pemilihan'){$('#hres').innerHTML=note;return}
   const rp=await sb.rpc('rekap_pemilihan',{p_kel:S.kelurahan,p_rw:rw,p_rt:rt}),rk=!rp.error&&rp.data?rp.data:null,vm={};
   if(rk)[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>vm[x.id]=x.n);
   const c=cl.map(x=>({...x,suara:vm[x.id]||0}));
-  const ck=(j,on,dis,t)=>`<label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer;margin:6px 0"><input type="checkbox" data-j="${j}" style="width:auto" ${on?'checked':''} ${dis?'disabled':''}><span>${t}</span></label>`;
-  $('#hres').innerHTML=hasil('Calon Ketua RW '+rw,c.filter(x=>x.jenis=='RW'),rk?stat3(rk.rw_kk,rk.rw_memilih):'')+hasil('Calon Ketua RT '+rt,c.filter(x=>x.jenis=='RT'&&x.rt==rt),rk?stat3(rk.rt_kk,rk.rt_memilih):'')
-   +`<h3 style="margin:22px 0 4px">Pemungutan Suara Ulang (PSU)</h3><p class="hint">Centang untuk mengaktifkan PSU. Suara yang sudah masuk untuk RT/RW tersebut dihapus seketika setelah Anda mengonfirmasi.</p>${ck('RT',rk&&rk.psu_rt,!rk,'PSU Ketua RT '+esc(rt))}${ck('RW',rk&&rk.psu_rw,!rk,'PSU Ketua RW '+esc(rw))}<div class="msg" id="psm"></div>`;
+  const ck=(j,on,dis,t)=>`<label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer;margin:6px 0"><input type="checkbox" data-j="${j}" style="width:auto" ${on?'checked':''} ${dis?'disabled':''}><span>${t}</span></label>`,pj=j=>mj[j]=='pemilihan';
+  $('#hres').innerHTML=note+(pj('RW')?hasil('Calon Ketua RW '+rw,c.filter(x=>x.jenis=='RW'),rk?stat3(rk.rw_kk,rk.rw_memilih):''):'')+(pj('RT')?hasil('Calon Ketua RT '+rt,c.filter(x=>x.jenis=='RT'&&x.rt==rt),rk?stat3(rk.rt_kk,rk.rt_memilih):''):'')
+   +`<h3 style="margin:22px 0 4px">Pemungutan Suara Ulang (PSU)</h3><p class="hint">Centang untuk mengaktifkan PSU. Suara yang sudah masuk untuk RT/RW tersebut dihapus seketika setelah Anda mengonfirmasi.</p>${pj('RT')?ck('RT',rk&&rk.psu_rt,!rk,'PSU Ketua RT '+esc(rt)):''}${pj('RW')?ck('RW',rk&&rk.psu_rw,!rk,'PSU Ketua RW '+esc(rw)):''}<div class="msg" id="psm"></div>`;
   document.querySelectorAll('#hres input[data-j]').forEach(el=>el.onchange=()=>{const want=el.checked;el.checked=!want;psuFlow(el.dataset.j,want,rt,rw,rk)})};
  // --- Pendaftaran calon (oleh Kelurahan)
  const cs=()=>sel('c');
@@ -533,19 +533,23 @@ async function warga(A){const [l,p]=await counts(S,false);const tl=await getTl(S
 const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',S.rw).order('created_at');
  cal=(qc.data||[]).filter(x=>x.jenis=='RW'||x.rt==S.rt);
  const rtL=cal.filter(x=>x.jenis=='RT'),rwL=cal.filter(x=>x.jenis=='RW');
- const mode=!rtL.length&&!rwL.length?'a':((rtL.length==1&&!rwL.length)||(!rtL.length&&rwL.length==1))?'b':'c';
- const hid={a:['pemilihan','penghitungan','penetapan'],b:['pemilihan','penghitungan'],c:[]}[mode],tlW=tl.filter(t=>!hid.includes((t.nama||'').trim().toLowerCase()));
- if(mode=='c'){const r=await sb.rpc('status_suara',{p_nkk:S.nkk});if(r.data)st=r.data;
+ const md=n=>n?n==1?'aklamasi':'pemilihan':'tidak',mj={RT:md(rtL.length),RW:md(rwL.length)},anyP=mj.RT=='pemilihan'||mj.RW=='pemilihan';
+ const hid=[...(anyP?[]:['pemilihan','penghitungan']),...(mj.RT=='tidak'&&mj.RW=='tidak'?['penetapan']:[])],tlW=tl.filter(t=>!hid.includes(kind(t)));
+ if(anyP){const r=await sb.rpc('status_suara',{p_nkk:S.nkk});if(r.data)st=r.data;
   if(phase=='selesai'){const r2=await sb.rpc('rekap_pemilihan',{p_kel:S.kelurahan,p_rw:S.rw,p_rt:S.rt});if(!r2.error)rk=r2.data}}
  const open=!!(st.boleh_rt||st.boleh_rw),psu=!!(st.psu_rt||st.psu_rw);
+ const jl={RT:rtL,RW:rwL},un={RT:'Ketua RT '+S.rt,RW:'Ketua RW '+S.rw},akl=['RT','RW'].filter(j=>mj[j]=='aklamasi'),tdk=['RT','RW'].filter(j=>mj[j]=='tidak');
+ const winH=j=>{const w=jl[j][0];return `<div class="win"><small>${esc(un[j])} (aklamasi)</small><img src="${esc(w.foto_url)}" alt="Foto ${esc(w.nama)}"><b>${esc(w.nama)}</b></div>`};
+ let extra='';
+ if(!anyP)extra=!akl.length?`<div class="card"><p class="hint">Tidak ada Pemilihan di RT ${esc(S.rt)} RW ${esc(S.rw)} ini.</p></div>`:`<div class="card"><p class="hint">Tidak ada Proses Pemilihan RT/RW di lingkungan ini, dan menunggu penetapan ${akl.map(j=>esc(un[j])).join(' dan ')} yang terpilih aklamasi.</p>${akl.map(winH).join('')}${tdk.length?'<p class="hint">Belum ada calon '+tdk.map(j=>esc(un[j])).join(' dan ')+' yang mendaftar.</p>':''}</div>`;
+ else if(akl.length||tdk.length)extra=`<div class="card">${akl.length?'<p class="hint">Menunggu penetapan '+akl.map(j=>esc(un[j])).join(' dan ')+' yang terpilih aklamasi.</p>'+akl.map(winH).join(''):''}${tdk.length?'<p class="hint">Tidak ada pemilihan '+tdk.map(j=>esc(un[j])).join(' dan ')+' (belum ada calon yang mendaftar).</p>':''}</div>`;
  const blk=(j,l,t)=>`<h3 style="margin:16px 0 8px">${t}</h3>`+(l.length?`<div class="cgrid">${l.map(x=>`<button type="button" class="cc" data-j="${j}" data-id="${x.id}" aria-pressed="false"><img src="${esc(x.foto_url)}" alt=""><span>${esc(x.nama)}</span><em>${ic('<path d="M5 12l5 5 9-10"/>',16)}</em></button>`).join('')}</div>`:'<p class="hint">Belum ada calon terdaftar.</p>');
  const terp=(t,l)=>{const m=Math.max(0,...l.map(x=>x.suara));if(!m)return '';const w=l.filter(x=>x.suara==m);
   if(w.length>1)return `<p class="hint">${t}: perolehan suara ${w.map(x=>esc(x.nama)).join(' dan ')} sama (seri). Penentuan lebih lanjut oleh pengurus.</p>`;
   return `<div class="win"><small>${t}</small><img src="${esc(w[0].foto_url)}" alt="Foto ${esc(w[0].nama)}"><b>${esc(w[0].nama)}</b></div>`};
  const pilH=[st.rt&&'<span>Calon RT</span><span>:</span><b>'+esc(st.rt)+'</b>',st.rw&&'<span>Calon RW</span><span>:</span><b>'+esc(st.rw)+'</b>',st.jam&&fmtJam(st.jam)&&'<span>Jam</span><span>:</span><span>'+esc(fmtJam(st.jam))+'</span>'].filter(Boolean).join('');
  const thx=x=>`<div class="thx" id="thx"><i>${ic('<path d="M5 12l5 5 9-10"/>',24)}</i><div><b>Terima Kasih!!</b><p>Anda telah memilih:</p><div class="pil">${pilH}</div><p class="info">${x}</p></div></div>`;
- if(mode=='a')sect=`<div class="card"><p class="hint">Tidak ada Pemilihan di RT ${esc(S.rt)} RW ${esc(S.rw)} ini.</p></div>`;
- else if(mode=='b'){const w=rtL.length?rtL[0]:rwL[0],u='Ketua '+w.jenis+' '+(w.jenis=='RT'?S.rt:S.rw);sect=`<div class="card"><p class="hint">Tidak ada Proses Pemilihan RT/RW di lingkungan ini, dan menunggu penetapan ${esc(u)} yang terpilih aklamasi.</p><div class="win"><small>${esc(u)} (aklamasi)</small><img src="${esc(w.foto_url)}" alt="Foto ${esc(w.nama)}"><b>${esc(w.nama)}</b></div></div>`}
+ if(!anyP)sect=extra;
  else if(open){const sdh=[st.sudah_rt&&'Calon RT: '+esc(st.rt),st.sudah_rw&&'Calon RW: '+esc(st.rw)].filter(Boolean).join(', ');
   sect=`<div class="card" id="vt"><h3>Pemilihan</h3>${psu?'<p class="info">Pemungutan Suara Ulang (PSU) sedang berlangsung. Suara sebelumnya telah dihapus; silakan memilih kembali.</p>':''}${sdh?'<p class="hint">Suara Anda yang sudah tercatat: '+sdh+'.</p>':''}<p class="hint">Pilih satu calon ${st.boleh_rt&&st.boleh_rw?'RT dan satu calon RW':st.boleh_rt?'RT':'RW'}, lalu tekan Kirim Suara. Satu keluarga hanya memiliki satu suara.</p>${st.boleh_rt?blk('RT',rtL,'Calon Ketua RT '+esc(S.rt)):''}${st.boleh_rw?blk('RW',rwL,'Calon Ketua RW '+esc(S.rw)):''}<button class="btn" id="vs" type="button" disabled>Kirim Suara</button></div>`}
  else if(st.sudah&&phase!='selesai')sect=thx('Informasi hasil pemilihan akan ditampilkan setelah tahapan pemilihan selesai.');
@@ -554,11 +558,12 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
   if(!rk)sect='<div class="card"><p class="hint">Hasil pemilihan belum dapat dimuat.</p></div>';
   else{const vm={};[...(rk.rt||[]),...(rk.rw||[])].forEach(x=>vm[x.id]=x.n);
    const wv=cal.map(x=>({...x,suara:vm[x.id]||0})),rl=wv.filter(x=>x.jenis=='RT'),wl=wv.filter(x=>x.jenis=='RW');
-   const a=terp('Ketua RT '+esc(S.rt),rl),b=terp('Ketua RW '+esc(S.rw),wl);
+   const a=mj.RT=='pemilihan'?terp('Ketua RT '+esc(S.rt),rl):'',b=mj.RW=='pemilihan'?terp('Ketua RW '+esc(S.rw),wl):'';
    if(since<=TERPILIH_JAM*36e5&&(a||b))sect+=`<div class="cel" id="cel"><h2>Selamat!</h2><p>Selamat kepada calon terpilih. Terima kasih atas partisipasi seluruh warga.</p><div class="row2">${a}${b}</div></div>`;
-   sect+=`<div class="card" id="hsl"><h3>Informasi Hasil Pemilihan</h3>${hasil('Calon Ketua RT '+esc(S.rt),rl,stat3(rk.rt_kk,rk.rt_memilih))}${hasil('Calon Ketua RW '+esc(S.rw),wl,stat3(rk.rw_kk,rk.rw_memilih))}</div>`}}
+   sect+=`<div class="card" id="hsl"><h3>Informasi Hasil Pemilihan</h3>${mj.RT=='pemilihan'?hasil('Calon Ketua RT '+esc(S.rt),rl,stat3(rk.rt_kk,rk.rt_memilih)):''}${mj.RW=='pemilihan'?hasil('Calon Ketua RW '+esc(S.rw),wl,stat3(rk.rw_kk,rk.rw_memilih)):''}</div>`}}
  else if(phase=='belum')sect='<div class="card"><p class="hint">Tahapan pemilihan belum dimulai.</p></div>';
  else sect='<div class="card"><p class="hint">Pemungutan suara di lingkungan ini sedang tidak berlangsung.</p></div>';
+ if(anyP)sect=extra+sect;
  const WM=[['pencalonan','Pencalonan','<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>','#7b3fa0'],['pendataan','Pendataan','<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>','#2e8b57'],['pemilihan','Pemilihan','<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>','#c0392b'],['penghitungan','Penghitungan','<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>','#1f6fb2'],['penetapan','Penetapan','<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/>','#d9822b']];
  const wbtn=WM.filter(([k])=>entered(tlW,k)||(k=='pemilihan'&&open));
  const wmenu=wbtn.length?`<section class="flat"><h3>Fitur Utama</h3><div class="tabs wrap" id="menu">${wbtn.map(([k,t,i,c])=>`<button type="button" data-k="${k}" style="--c:${c}">${ic(i,26)}${t}</button>`).join('')}</div></section>`:'';
