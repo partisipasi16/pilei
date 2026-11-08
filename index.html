@@ -107,6 +107,13 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 .tabs.w4{flex-wrap:nowrap;gap:5px}.tabs.w4 button{flex:1 1 0;min-width:0;font-size:12px;line-height:1.2;padding:12px 2px;text-align:center}
 .tabs button:disabled{opacity:.4;cursor:not-allowed}
 .tbtn{display:inline-flex;align-items:center;gap:6px}
+#sub{position:fixed;inset:0;z-index:15;background:var(--paper);overflow-y:auto;animation:slr .45s cubic-bezier(.22,.8,.3,1) both}
+#sub.out{animation:sout .35s ease-in both;pointer-events:none}
+@keyframes sout{to{transform:translateX(-100%);opacity:0}}
+#sub .sh{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 16px;color:#fff}
+#sub .sh h2{font-size:19px;position:relative}
+#sub .bk{position:relative;flex:none;width:40px;height:40px;border-radius:10px;background:#ffffff2e;border:1px solid #ffffff66;color:#fff;display:grid;place-items:center;cursor:pointer}
+#sub .sb{max-width:900px;margin:0 auto;padding:18px}
 </style></head><body>
 
 <div id="splash" class="abs">
@@ -173,7 +180,7 @@ document.addEventListener('input',e=>{if(e.target.classList.contains('num'))e.ta
 function askConfirm(t,x,yes,lbl='Hapus'){if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML=`<div class="mb" role="dialog" aria-modal="true"><h3>${esc(t)}</h3><p>${esc(x)}</p><button class="btn ghost" id="xn">Batal</button> <button class="btn del" id="xy">${lbl}</button></div>`;document.body.append(d);$('#xn').onclick=()=>d.remove();$('#xy').onclick=()=>{d.remove();yes()}}
 let inApp=false;
 function askExit(){if($('#xm'))return;const d=document.createElement('div');d.id='xm';d.className='modal';d.innerHTML='<div class="mb" role="dialog" aria-modal="true"><h3>Keluar dari akun?</h3><p>Anda akan kembali ke halaman login.</p><button class="btn ghost" id="xn">Batal</button> <button class="btn del" id="xy">Keluar</button></div>';document.body.append(d);$('#xn').onclick=()=>d.remove();$('#xy').onclick=()=>{inApp=false;location.reload()}}
-window.addEventListener('popstate',()=>{if(inApp){history.pushState({a:1},'');askExit()}});
+window.addEventListener('popstate',()=>{if(inApp){if(subOpen){closeSub();return}history.pushState({a:1},'');askExit()}});
 $('#tabs').innerHTML=Object.entries(ROLES).map(([k,v])=>`<button type="button" data-r="${k}" style="--c:${COL[k]}">${ic(IC[k],28)}${v}</button>`).join('');
 function setRole(r){role=r;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.r==r));
  $('#u').placeholder=r!='pusat'?'Nomor HP terdaftar':'Username';
@@ -232,6 +239,9 @@ const art='<svg class="bgart" viewBox="0 0 800 200" preserveAspectRatio="xMidYMi
 const head=(t,s,x='',c='')=>`<header class="top abs">${art}<div class="row"><div><h1 class="${c}">${t}</h1><small>${s}</small></div><button class="exit" id="ex" type="button" aria-label="Keluar">${ic(EXIT,22)}</button></div>${x}</header>`;
 const form=(id,h)=>`<div class="card hide" id="${id}">${h}</div>`;
 const show=id=>document.querySelectorAll('.pnl').forEach(x=>x.classList.toggle('hide',x.id!=id));
+let subOpen=false;
+function openSub(t,h){const o=$('#sub');if(o)o.remove();const d=document.createElement('div');d.id='sub';d.innerHTML=`<div class="sh abs">${art}<button class="bk" type="button" aria-label="Kembali">${ic('<path d="M15 18l-6-6 6-6"/>',22)}</button><h2>${t}</h2></div><div class="sb">${h}</div>`;document.body.append(d);document.body.style.overflow='hidden';subOpen=true;history.pushState({s:1},'');d.querySelector('.bk').onclick=()=>history.back()}
+function closeSub(){const d=$('#sub');subOpen=false;document.body.style.overflow='';if(!d)return;d.classList.add('out');setTimeout(()=>d.remove(),380)}
 function slide(el){el.classList.remove('sl');void el.offsetWidth;el.classList.add('sl');el.scrollIntoView({behavior:'smooth',block:'start'})}
 const offMenu=()=>document.querySelectorAll('#menu button').forEach(b=>b.classList.remove('on'));
 
@@ -325,7 +335,7 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   <div class="dua"><div><label>Tanggal Awal</label><input id="ta" type="date"></div><div><label>Tanggal Akhir</label><input id="tb" type="date"></div></div>
   <div class="dua"><div><label>Waktu Awal</label><input id="ja" type="time" value="00:01"></div><div><label>Waktu Akhir</label><input id="jb" type="time" value="23:59"></div></div></div>
   <button class="btn" id="tsv">Simpan</button> <button class="btn ghost hide" id="tcx">Batal</button><div class="msg" id="tm"></div><div class="scroll" id="tls"></div></div>
- <div class="card pnl hide" id="p_pendataan"><div class="rowh" style="margin-bottom:6px"><h3>Informasi Data Warga</h3><button class="btn ghost sm cls" type="button">Tutup</button></div><div class="dua"><div><label for="drt">RT</label><select id="drt"></select></div><div><label for="drw">RW</label><select id="drw" disabled></select></div></div><div id="dres"></div></div>
+ 
  <div class="pnl hide" id="p_pencalonan"><h3 style="margin:2px 0 12px">Pendaftaran Calon</h3><div class="card"><div class="dua"><div><label for="crt">RT</label><select id="crt"></select></div><div><label for="crw">RW</label><select id="crw" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
  <div class="card pnl hide" id="p_pemilihan"><h3>Hasil Pemilihan</h3><div class="dua"><div><label for="hrt">RT</label><select id="hrt"></select></div><div><label for="hrw">RW</label><select id="hrw" disabled></select></div></div><div id="hres"></div></div>
  <div class="card pnl hide" id="p_penghitungan"><h3>Penghitungan Suara</h3><div class="dua"><div><label for="grt">RT</label><select id="grt"></select></div><div><label for="grw">RW</label><select id="grw" disabled></select></div></div><div id="gres"></div></div>
@@ -336,9 +346,8 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   if(k=='pemilihan'){$('#hrt').focus();await pair('h',()=>showHasil());$('#hres').innerHTML=''}
   if(k=='penghitungan'){await pair('g',()=>showHasil('g','penghitungan'));$('#gres').innerHTML=''}
   if(k=='penetapan'){await pair('t',()=>showHasil('t','penetapan'));$('#tres').innerHTML=''}});
- $('#sel').onclick=async()=>{offMenu();show('p_pendataan');slide($('#p_pendataan'));await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
+ $('#sel').onclick=async()=>{offMenu();show('');openSub('Informasi Data Warga','<div class="card"><div class="dua"><div><label for="drt">RT</label><select id="drt"></select></div><div><label for="drw">RW</label><select id="drw" disabled></select></div></div><div id="dres"></div></div>');await pair('d',()=>showData());$('#dres').innerHTML='<p class="hint">Pilih RT dan RW untuk melihat jumlah warga.</p>'};
  $('#tbtn').onclick=()=>{offMenu();show('p_tahapan');lt();$('#p_tahapan').scrollIntoView({behavior:'smooth'})};
- document.querySelectorAll('.cls').forEach(b=>b.onclick=()=>show(''));
  // --- Pendata warga (registrasi petugas)
  let rows=[],ed=null,lastRw='',hl=null;
  const lp=async()=>{const {data}=await sb.from('petugas').select('*').eq('kelurahan',S.kelurahan).order('created_at',{ascending:false});rows=data||[];
@@ -598,19 +607,17 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
  const cn=x=>`<div class="card"><div class="cn"><img src="${esc(x.foto_url)}" alt="Foto ${esc(x.nama)}"><div><b>${esc(x.nama)}${ageTxt(x)}</b></div></div>${cf('Pekerjaan',x.pekerjaan)}${cf('Pendidikan',x.pendidikan)}${cf('Visi',x.visi)}${cf('Misi',x.misi)}${cf('Program Kerja',x.program)}</div>`;
  const cb=(t,l)=>`<h3 style="margin:16px 0 8px">${t}</h3>`+(l.length?l.map(cn).join(''):'<p class="hint">Belum ada calon terdaftar.</p>');
  const wcal=`<div class="pnl hide" id="p_pencalonan">${cb('Calon Ketua RT '+esc(S.rt),rtL)}${cb('Calon Ketua RW '+esc(S.rw),rwL)}</div>`;
- const wdat=`<div class="card pnl hide" id="p_pendataan"><div class="rowh" style="margin-bottom:6px"><h3>Informasi Data Pemilih</h3><button class="btn ghost sm cls" type="button">Tutup</button></div><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT ${esc(S.rt)} / RW ${esc(S.rw)}</option><option value="rw">Seluruh RW ${esc(S.rw)}</option></select><div class="scroll" id="pdl" style="margin-top:12px"></div></div>`;
+ const wdat=``;
  A.innerHTML=head(esc(S.nama_kk),'NIK <span id="nk">'+mask+'</span><button class="eb" id="ne" type="button" aria-label="Tampilkan NIK">'+ic(EYE,18)+'</button>',`<div class="hd" id="dn">${hdr(l,p,true)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}${wmenu}<div class="pnl${wbtn.length?' hide':''}" id="p_sect">${sect}</div>${wcal}${wdat}
  <section class="flat"><h3>Data Keluarga</h3><div class="scroll"><table class="ht"><tr><th>Nama</th><th>Hubungan</th><th>JK</th></tr>${(data||[]).map(r=>`<tr><td>${esc(r.nama)}</td><td>${esc(r.hubungan||'')}</td><td>${r.jk}</td></tr>`).join('')}</table></div></section></main>`;
  $('#ne').onclick=()=>{vis=!vis;$('#nk').textContent=vis?(S.nik_kk||'-'):mask;$('#ne').innerHTML=ic(vis?EYEOFF:EYE,18);$('#ne').setAttribute('aria-label',vis?'Sembunyikan NIK':'Tampilkan NIK')};
- $('#sel').onclick=()=>{offMenu();show('p_pendataan');slide($('#p_pendataan'));loadPd()};
- document.querySelectorAll('.cls').forEach(b=>b.onclick=()=>show(''));
+ $('#sel').onclick=()=>{offMenu();show('');openSub('Informasi Data Pemilih','<div class="card"><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT '+esc(S.rt)+' / RW '+esc(S.rw)+'</option><option value="rw">Seluruh RW '+esc(S.rw)+'</option></select><div class="scroll" id="pdl" style="margin-top:12px"></div></div>');$('#pds').onchange=loadPd;loadPd()};
  const loadPd=async()=>{const el=$('#pdl'),rtOnly=$('#pds').value=='rt';el.innerHTML='Memuat...';
   const q=c=>{let r=sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',S.rw);if(rtOnly)r=r.eq('rt',S.rt);return r.order('nama_kk').limit(500)};
   let r=await q('nkk,nama_kk,alamat,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
   el.innerHTML=d.length?`<p class="hint">${d.length} keluarga</p><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data warga.</p>'};
- $('#pds').onchange=loadPd;
  if(wbtn.length){bindMenu(k=>{show(k=='pencalonan'?'p_pencalonan':'p_sect')});
   const nw=new Date(),last=k=>Math.max(0,...tlW.filter(t=>kind(t)==k&&nw>=tStart(t)).map(t=>tStart(t).getTime())),df=wbtn.reduce((a,k)=>last(k)>=last(a)?k:a);
   $('#menu button[data-k="'+df+'"]').click()}
