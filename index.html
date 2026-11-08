@@ -125,6 +125,7 @@ header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;mar
 #dp{max-height:60vh;overflow:auto}#dp .ht th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
 .mact{gap:12px 26px}
 .srch{position:relative;margin:16px 0 10px}.srch input{padding-left:38px;padding-right:40px}.srch .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#56597a;display:grid;pointer-events:none}.srch .qx{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}.srch .qx[hidden]{display:none}
+#pdl{max-height:60vh;overflow:auto}#pdl .ht th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
 </style></head><body>
 
 <div id="splash" class="abs">
@@ -651,13 +652,15 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
  A.innerHTML=head(esc(S.nama_kk),'NIK <span id="nk">'+mask+'</span><button class="eb" id="ne" type="button" aria-label="Tampilkan NIK">'+ic(EYE,18)+'</button>',`<div class="hd" id="dn">${hdr(l,p,true)}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}${wmenu}<div class="pnl${wbtn.length?' hide':''}" id="p_sect">${sect}</div>${wcal}${wdat}
  <section class="flat"><h3>Data Keluarga</h3><div class="scroll"><table class="ht"><tr><th>Nama</th><th>Hubungan</th><th class="ag">Usia</th></tr>${(data||[]).map(r=>`<tr><td>${esc(r.nama)}</td><td>${esc(r.hubungan||'')}</td><td class="ag">${usia(r.tgl_lahir)??'-'}</td></tr>`).join('')}</table></div></section></main>`;
  $('#ne').onclick=()=>{vis=!vis;$('#nk').textContent=vis?(S.nik_kk||'-'):mask;$('#ne').innerHTML=ic(vis?EYEOFF:EYE,18);$('#ne').setAttribute('aria-label',vis?'Sembunyikan NIK':'Tampilkan NIK')};
- $('#sel').onclick=()=>{offMenu();openSub('Informasi Data Pemilih','<div class="card"><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT '+esc(S.rt)+' / RW '+esc(S.rw)+'</option><option value="rw">Seluruh RW '+esc(S.rw)+'</option></select><div class="scroll" id="pdl" style="margin-top:12px"></div></div>');$('#pds').onchange=loadPd;loadPd()};
+ $('#sel').onclick=()=>{offMenu();openSub('Informasi Data Pemilih','<div class="card"><label for="pds">Wilayah</label><select id="pds"><option value="rt">RT '+esc(S.rt)+' / RW '+esc(S.rw)+'</option><option value="rw">Seluruh RW '+esc(S.rw)+'</option></select><div id="pdc" style="margin-top:12px"></div><div class="scroll" id="pdl"></div></div>');$('#pds').onchange=loadPd;loadPd()};
  const loadPd=async()=>{const el=$('#pdl'),rtOnly=$('#pds').value=='rt';el.innerHTML='Memuat...';
   const q=c=>{let r=sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',S.rw);if(rtOnly)r=r.eq('rt',S.rt);return r.order('nama_kk').limit(500)};
-  let r=await q('nkk,nama_kk,alamat,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat');
+  let r=await q('nkk,nama_kk,alamat,pass_hash,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat,pass_hash');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
-  el.innerHTML=d.length?`<p class="hint">${d.length} keluarga</p><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data warga.</p>'};
+  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count,0);
+  $('#pdc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';
+  el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
  if(wbtn.length){bindMenu(k=>openSub(({pemilihan:'Pemilihan Calon'})[k]||WM.find(x=>x[0]==k)[1],$(k=='pencalonan'?'#p_pencalonan':k=='penghitungan'?'#p_hitung':'#p_sect')));}
  const vt=$('#vt');
  if(vt){const need=[st.boleh_rt&&'RT',st.boleh_rw&&'RW'].filter(Boolean),vs=$('#vs');
