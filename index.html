@@ -129,6 +129,21 @@ header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;mar
 .rtg{display:grid;grid-template-columns:1fr 1fr;margin-top:18px}.rtg>.dn{margin:0;padding:12px 6px;min-width:0}.rtg>.dn:nth-child(odd){border-right:1px solid var(--line)}.rtg>.dn:last-child:nth-child(odd){grid-column:1/-1;border-right:0}
 .srch{position:relative;margin:16px 0 10px}.srch input{padding-left:38px;padding-right:40px}.srch .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#56597a;display:grid;pointer-events:none}.srch .qx{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}.srch .qx[hidden]{display:none}
 #pdl{max-height:60vh;overflow:auto}#pdl .ht th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
+/* --- Perbaikan: Informasi Data Warga */
+#dres{margin-top:22px}
+.dn .legend{width:100%;max-width:158px;grid-template-columns:1fr auto;margin:0 auto}
+.dn .legend span{white-space:nowrap;text-align:left}
+.legend .sx{display:flex;align-items:center;padding-left:0}.legend .sx .dot{flex:none}
+.dn .rwr{display:flex;align-items:center;justify-content:center;gap:16px}.dn .rwr svg{flex:none}.dn .rwr .legend{width:auto;min-width:150px;margin:0}
+.rwb{display:block}.rwb .dn{margin-top:6px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+/* --- Baris KK milik user */
+.ht tr.me td{background:#e4e5fa;font-weight:600}.ht tr.me td:first-child{box-shadow:inset 4px 0 0 var(--teal)}
+/* --- Animasi lembut halaman utama setelah login */
+@keyframes enUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes enDn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+#app.enter header.top{animation:enDn .6s cubic-bezier(.22,.8,.3,1) both}
+#app.enter main>*{animation:enUp .7s cubic-bezier(.22,.8,.3,1) both}
+#app.enter main>*:nth-child(1){animation-delay:.12s}#app.enter main>*:nth-child(2){animation-delay:.2s}#app.enter main>*:nth-child(3){animation-delay:.28s}#app.enter main>*:nth-child(4){animation-delay:.36s}#app.enter main>*:nth-child(n+5){animation-delay:.44s}
 </style></head><body>
 
 <div id="splash" class="abs">
@@ -244,8 +259,9 @@ $('#rf').onsubmit=async e=>{e.preventDefault();const a=$('#np').value,m=$('#lm')
  finally{btn.disabled=false}};
 
 const dcol=lt=>lt?['#4fc3f7','#ffb74d','#fff','#ffffffbb']:['#1e88e5','#fb8c00','#1b1d3b','#56597a'];
-function donutSvg(l,pr,z,lt,w){const t=l+pr,C=251.33,a=t?l/t*C:0,[cL,cP,x1,x2]=dcol(lt);
- return `<svg width="${z}" height="${z}" viewBox="0 0 100 100" role="img" aria-label="Laki-laki ${l}, perempuan ${pr}"><circle cx="50" cy="50" r="40" fill="none" stroke="${cP}" stroke-width="16"/><circle cx="50" cy="50" r="40" fill="none" stroke="${cL}" stroke-width="16" stroke-dasharray="${a} ${C}" transform="rotate(-90 50 50)"/>`+(w?`<text x="50" y="49" text-anchor="middle" font-size="14" font-weight="700" fill="${x1}">${t}</text><text x="50" y="62" text-anchor="middle" font-size="7" fill="${x2}">warga</text>`:`<text x="50" y="57" text-anchor="middle" font-size="22" font-weight="700" fill="${x1}">${t}</text>`)+'</svg>'}
+const dcolRW=['#00897b','#8e24aa','#1b1d3b','#56597a'];
+function donutSvg(l,pr,z,lt,w,pal){const t=l+pr,C=251.33,a=t?l/t*C:0,[cL,cP,x1,x2]=pal||dcol(lt);
+ return `<svg width="${z}" height="${z}" viewBox="0 0 100 100" role="img" aria-label="Laki-laki ${l}, perempuan ${pr}"><circle cx="50" cy="50" r="40" fill="none" stroke="${cP}" stroke-width="16"/><circle cx="50" cy="50" r="40" fill="none" stroke="${cL}" stroke-width="16" stroke-dasharray="${a} ${C}" transform="rotate(-90 50 50)"/>`+(w?`<text x="50" y="49" text-anchor="middle" font-size="14" font-weight="700" fill="${x1}">${t}</text><text x="50" y="62" text-anchor="middle" font-size="7" fill="${x2}">Jiwa</text>`:`<text x="50" y="57" text-anchor="middle" font-size="22" font-weight="700" fill="${x1}">${t}</text>`)+'</svg>'}
 function donutLeg(l,pr,lt){const [cL,cP]=dcol(lt);return `<div class="legend"><span><i class="dot" style="background:${cL}"></i>Laki-laki</span><b>${l}</b><span><i class="dot" style="background:${cP}"></i>Perempuan</span><b>${pr}</b></div>`}
 const donut=(l,pr,z=150,lt=false)=>donutSvg(l,pr,z,lt,true)+donutLeg(l,pr,lt);
 const SELIC='<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>';
@@ -266,8 +282,8 @@ function closeSub(){const d=$('#sub'),r=subRet,c=subCfg;subRet=null;subCfg={};if
 function slide(el){el.classList.remove('sl');void el.offsetWidth;el.classList.add('sl');el.scrollIntoView({behavior:'smooth',block:'start'})}
 const offMenu=()=>document.querySelectorAll('#menu button').forEach(b=>b.classList.remove('on'));
 
-async function render(){$('#login').remove();inApp=true;history.pushState({a:1},'');const A=$('#app');A.classList.remove('hide');
- if(S.role=='pusat')return pusat(A);if(S.role=='kel')return kel(A);if(S.role=='user')return warga(A);return petugas(A)}
+async function render(){$('#login').remove();inApp=true;history.pushState({a:1},'');const A=$('#app');A.classList.remove('hide');A.classList.add('enter');
+ try{if(S.role=='pusat')return await pusat(A);if(S.role=='kel')return await kel(A);if(S.role=='user')return await warga(A);return await petugas(A)}finally{setTimeout(()=>A.classList.remove('enter'),1600)}}
 
 async function pusat(A){
  A.innerHTML=head('Admin Pusat','Registrasi Admin Kelurahan')+`<main><div class="card"><h3 id="ft">Registrasi Admin Kelurahan</h3><div class="grid2">
@@ -296,7 +312,10 @@ async function pusat(A){
   m.className=q.error?'msg':'msg ok';m.textContent=q.error?q.error.message:(ed?'Perubahan tersimpan.':'Admin kelurahan tersimpan.');if(!q.error){reset();load()}};
  lock();load()}
 
-async function counts(f,byRt=true){const c=async jk=>{let q=sb.from('anggota').select('nik,keluarga!inner(kelurahan,rw,rt)',{count:'exact',head:true}).eq('jk',jk).eq('keluarga.kelurahan',f.kelurahan);if(f.rw){q=q.eq('keluarga.rw',f.rw);if(byRt)q=q.eq('keluarga.rt',f.rt)}const {count}=await q;return count||0};return [await c('L'),await c('P')]}
+async function counts(f,byRt=true){const c=async jk=>{let q=sb.from('anggota').select('nik,keluarga!inner(kelurahan,rw,rt)',{count:'exact',head:true}).eq('jk',jk).eq('keluarga.kelurahan',f.kelurahan);if(f.rw){q=q.eq('keluarga.rw',f.rw);if(byRt)q=q.eq('keluarga.rt',f.rt)}const {count}=await q;return count||0};
+ const kq=(tb,sel,hub)=>{let q=sb.from(tb).select(sel,{count:'exact',head:true});if(hub)q=q.eq('hubungan','Istri');const p=tb=='anggota'?'keluarga.':'';q=q.eq(p+'kelurahan',f.kelurahan);if(f.rw){q=q.eq(p+'rw',f.rw);if(byRt)q=q.eq(p+'rt',f.rt)}return q.then(x=>x.count||0)};
+ const [L,P,kk,is]=await Promise.all([c('L'),c('P'),kq('keluarga','nkk',false),kq('anggota','nik,keluarga!inner(kelurahan,rw,rt)',true)]);
+ const m=Math.min(is,kk);return [L+m,P+kk-m]}
 function fmtJam(v){const d=new Date(v);if(isNaN(d))return '';const o={timeZone:'Asia/Makassar'};return d.toLocaleDateString('id-ID',{...o,day:'numeric',month:'short',year:'numeric'})+', '+d.toLocaleTimeString('id-ID',{...o,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' WITA'}
 function usia(s){if(!s)return null;const d=new Date(s+'T00:00:00'),n=new Date();if(isNaN(d))return null;let a=n.getFullYear()-d.getFullYear();if(n.getMonth()<d.getMonth()||(n.getMonth()==d.getMonth()&&n.getDate()<d.getDate()))a--;return a>=0?a:null}
 const ageTxt=x=>{const a=usia(x.tgl_lahir);return a==null?'':' ('+a+')'};
@@ -415,10 +434,11 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   rw.onchange=()=>{rt.innerHTML=opts([...new Set(d.filter(r=>r.rw==rw.value).map(r=>r.rt))].sort());rt.disabled=!rw.value;cb()};rt.onchange=cb};
  // --- Informasi pendataan: donut RT dan RW sebaris
  // RW dipilih saja: donut RW (besar, tengah) + donut semua RT (2 per baris, garis vertikal tipis). RT dipilih: donut RT + RW sebaris.
- const kkData=async rw=>{let all=[],from=0;for(;;){const {data,error}=await sb.from('keluarga').select('nkk,rt,anggota(jk)').eq('kelurahan',S.kelurahan).eq('rw',rw).order('nkk').range(from,from+999);if(error)throw error;all=all.concat(data||[]);if(!data||data.length<1000)break;from+=1000}return all};
- const aggRt=rows=>{const m={};rows.forEach(k=>{const o=m[k.rt]=m[k.rt]||{kk:0,l:0,p:0};o.kk++;(k.anggota||[]).forEach(a=>{if(a.jk=='L')o.l++;else if(a.jk=='P')o.p++})});return m};
- const infL=o=>{const [cL,cP]=dcol(false);return `<div class="legend">${o.rt!=null?`<span>Jumlah RT</span><b>${o.rt}</b>`:''}<span>Jumlah KK</span><b>${o.kk}</b><span>Jumlah Jiwa</span><b>${o.l+o.p}</b><span class="sx"><i class="dot" style="background:${cL}"></i>Laki-laki</span><b>${o.l}</b><span class="sx"><i class="dot" style="background:${cP}"></i>Perempuan</span><b>${o.p}</b></div>`};
- const infC=(h,o,z)=>`<div class="dn"><h4>${h}</h4>${donutSvg(o.l,o.p,z,false,true)}${infL(o)}</div>`;
+ const kkData=async rw=>{let all=[],from=0;for(;;){const {data,error}=await sb.from('keluarga').select('nkk,rt,anggota(jk,hubungan)').eq('kelurahan',S.kelurahan).eq('rw',rw).order('nkk').range(from,from+999);if(error)throw error;all=all.concat(data||[]);if(!data||data.length<1000)break;from+=1000}return all};
+ const aggRt=rows=>{const m={};rows.forEach(k=>{const o=m[k.rt]=m[k.rt]||{kk:0,l:0,p:0};o.kk++;if((k.anggota||[]).some(a=>a.hubungan=='Istri'))o.l++;else o.p++;(k.anggota||[]).forEach(a=>{if(a.jk=='L')o.l++;else if(a.jk=='P')o.p++})});return m};
+ const infL=(o,pal)=>{const [cL,cP]=pal||dcol(false);return `<div class="legend">${o.rt!=null?`<span>Jumlah RT</span><b>${o.rt}</b>`:''}<span>Jumlah KK</span><b>${o.kk}</b><span>Jumlah Jiwa</span><b>${o.l+o.p}</b><span class="sx"><i class="dot" style="background:${cL}"></i>Laki-laki</span><b>${o.l}</b><span class="sx"><i class="dot" style="background:${cP}"></i>Perempuan</span><b>${o.p}</b></div>`};
+ const infC=(h,o,z,pal)=>`<div class="dn"><h4>${h}</h4>${donutSvg(o.l,o.p,z,false,true,pal)}${infL(o,pal)}</div>`;
+ const infR=(h,o,z,pal)=>`<div class="dn"><h4>${h}</h4><div class="rwr">${donutSvg(o.l,o.p,z,false,true,pal)}${infL(o,pal)}</div></div>`;
  let dtk=0;
  const showData=async()=>{const rw=$('#drw').value,rt=$('#drt').value,R=$('#dres'),tk=++dtk;
   if(!rw){R.innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat jumlah warga.</p>';return}
@@ -427,8 +447,8 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   if(tk!=dtk)return;
   const m=aggRt(rows),rts=[...new Set([...(pet.data||[]).map(r=>r.rt),...Object.keys(m)])].sort(),Z={kk:0,l:0,p:0},g=r=>m[r]||Z;
   const W=rts.reduce((a,r)=>({kk:a.kk+g(r).kk,l:a.l+g(r).l,p:a.p+g(r).p}),{...Z});W.rt=rts.length;
-  R.innerHTML=rt?`<div class="dua">${infC('RT '+esc(rt),g(rt),120)}${infC('RW '+esc(rw),W,120)}</div>`
-   :`<div class="rwb">${infC('RW '+esc(rw),W,170)}</div>`+(rts.length?`<div class="rtg">${rts.map(r=>infC('RT '+esc(r),g(r),110)).join('')}</div>`:'')};
+  R.innerHTML=rt?`<div class="dua">${infC('RW '+esc(rw),W,120,dcolRW)}${infC('RT '+esc(rt),g(rt),120)}</div>`
+   :`<div class="rwb">${infR('RW '+esc(rw),W,110,dcolRW)}</div>`+(rts.length?`<div class="rtg">${rts.map(r=>infC('RT '+esc(r),g(r),110)).join('')}</div>`:'')};
  // --- Hasil pemilihan
   const psuFlow=(j,want,rt,rw,rk)=>{
   const nm=j=='RT'?'Ketua RT '+rt+' (RW '+rw+')':'Ketua RW '+rw,n=rk?(j=='RT'?rk.rt_memilih:rk.rw_memilih):0,kk=rk?(j=='RT'?rk.rt_kk:rk.rw_kk):0,wr=j=='RT'?'RT '+rt:'RW '+rw;
@@ -573,8 +593,8 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
   let r=await q('nkk,nama_kk,alamat,pass_hash,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat,pass_hash');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
-  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count,0);
-  $('#dpc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
+  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count+1,0);
+  $('#dpc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
  const syncAdd=()=>{const on=canAdd();$('#tb2').hidden=!on;if(on!=!!$('#tb'))refresh()};
  setInterval(syncAdd,30000);loadDp();
  // --- Nomor HP KK tidak boleh sama (dicek sejak diisi, dan sekali lagi saat simpan)
@@ -691,9 +711,9 @@ const qc=await sb.from('calon').select('*').eq('kelurahan',S.kelurahan).eq('rw',
   let r=await q('nkk,nama_kk,alamat,pass_hash,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat,pass_hash');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
-  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count,0);
+  const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count+1,0);
   $('#pdc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';
-  el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
+  el.innerHTML=d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==S.nkk?' class="me"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
  if(wbtn.length){bindMenu(k=>openSub(({pemilihan:'Pemilihan Calon'})[k]||WM.find(x=>x[0]==k)[1],$(k=='pencalonan'?'#p_pencalonan':k=='penghitungan'?'#p_hitung':'#p_sect')));}
  const vt=$('#vt');
  if(vt){const need=[st.boleh_rt&&'RT',st.boleh_rw&&'RW'].filter(Boolean),vs=$('#vs');
