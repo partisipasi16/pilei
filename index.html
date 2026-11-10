@@ -601,7 +601,7 @@ let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
  const canAdd=()=>tl.some(t=>kind(t)=='pendataan'&&aktif(t));
  A.innerHTML=head(esc(S.nama),'Pendata RT '+esc(S.rt)+'/RW '+esc(S.rw)+' '+esc(S.kelurahan),`<div class="hd" id="dn">${hdrP(l,p,canAdd())}</div>`,'ttl')+`<main>${tlCard(tlHtml(tl))}<button class="btn alt wide" id="tb2" type="button"${canAdd()?'':' hidden'}>${ic(PG,20)}Tambah Data Pemilih</button>
- <section class="flat"><h3>Data Pemilih</h3><div id="dpc"></div><div class="scroll" id="dp"></div></section>
+ <section class="flat"><h3>Data Pemilih</h3><div id="dpc"></div><div class="srch" id="dps" hidden><span class="si">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)}</span><input id="dpq" autocomplete="off" placeholder="Cari nama KK atau alamat" aria-label="Cari pemilih"><button type="button" class="qx" id="dpx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div class="scroll" id="dp"></div></section>
  <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><div class="rowh" style="margin-bottom:6px"><p class="hint" style="margin:0">Semua isian wajib diisi.</p><button class="btn ghost sm" id="cx" type="button">Batal</button></div><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
  <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"><div class="msg nkm"></div></div><div><label>Alamat</label><input id="al"></div>
@@ -651,13 +651,17 @@ async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kel
   if(t){m.className='msg';m.textContent=t;el.value='';el.focus();upd()}else m.textContent=''};
  ml.addEventListener('input',e=>{if(e.target.classList.contains('nik'))nikWarn(e.target)});$('#nkik').addEventListener('input',e=>nikWarn(e.target));$('#nkk').addEventListener('input',chkNkk);
  // --- Tabel Data Pemilih (RT/RW pendata)
- const loadDp=async()=>{const el=$('#dp'),hl=hlKK;hlKK=null;
+ let dpD=[],dpHl=null;
+ const dpDraw=()=>{const el=$('#dp'),d=dpD,hl=dpHl,q=($('#dpq').value||'').trim().toLowerCase(),l=d.filter(x=>!q||[x.nama_kk,x.alamat].join(' ').toLowerCase().includes(q));$('#dps').hidden=!d.length;
+  el.innerHTML=l.length?`<table class="ht pm"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+l.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':(d.length?'<p class="hint">Data tidak ditemukan.</p>':'<p class="hint">Belum ada data pemilih.</p>')};
+ $('#dpq').oninput=()=>{$('#dpx').hidden=!$('#dpq').value;dpDraw()};$('#dpx').onclick=()=>{$('#dpq').value='';$('#dpx').hidden=true;dpDraw();$('#dpq').focus()};
+ const loadDp=async()=>{const el=$('#dp');dpHl=hlKK;hlKK=null;
   const q=c=>sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',S.rw).eq('rt',S.rt).order('nama_kk').limit(500);
   let r=await q('nkk,nama_kk,alamat,pass_hash,anggota(count)');if(r.error)r=await q('nkk,nama_kk,alamat,pass_hash');
   if(r.error){el.innerHTML='<p class="msg">'+esc(r.error.message)+'</p>';return}
   const d=r.data||[];
   const jw=d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count+1,0);
-  $('#dpc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 10px;font-size:14px;background:#e8eafc;border-radius:8px;padding:8px 12px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';el.innerHTML=d.length?`<table class="ht pm"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr${x.nkk==hl?' class="new"':''}><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Belum ada data pemilih.</p>'};
+  $('#dpc').innerHTML=d.length?`<div class="rowh" style="margin:0 0 10px;font-size:14px;background:#e8eafc;border-radius:8px;padding:8px 12px"><span><b>${d.length}</b> KK</span><span><b>${jw}</b> Jiwa</span></div>`:'';dpD=d;dpDraw()};
  const syncAdd=()=>{const on=canAdd();$('#tb2').hidden=!on;if(on!=!!$('#tb'))refresh()};
  setInterval(syncAdd,30000);loadDp();
  // --- Nomor HP KK tidak boleh sama (dicek sejak diisi, dan sekali lagi saat simpan)
