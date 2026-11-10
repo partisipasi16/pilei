@@ -373,7 +373,7 @@ function fmtR2(a,b){const x=a.split('-'),y=b.split('-'),yy=v=>v.slice(2),dd=v=>S
  if(a==b)return dd(x[2])+'/'+x[1]+'/'+yy(x[0]);
  if(x[0]==y[0]&&x[1]==y[1])return dd(x[2])+' - '+dd(y[2])+'<br>'+y[1]+'/'+yy(y[0]);
  return dd(x[2])+'/'+x[1]+(x[0]==y[0]?'':'/'+yy(x[0]))+' -<br>'+dd(y[2])+'/'+y[1]+'/'+yy(y[0])}
-const KM=[['pemilih','Data Pemilih',I_USR,'#0f8b8d'],['pendata','Pendata',PG,'#1f6fb2'],['pencalonan','Pencalonan',I_CLN,'#7b3fa0'],['penghitungan','Penghitungan',I_HIT,'#2e8b57'],['penetapan','Penetapan',I_TET,'#d9822b']];
+const KM=[['pendata','Pendata',PG,'#1f6fb2'],['pemilih','Data Pemilih',I_USR,'#0f8b8d'],['pencalonan','Pencalonan',I_CLN,'#7b3fa0'],['penghitungan','Penghitungan',I_HIT,'#2e8b57'],['penetapan','Penetapan',I_TET,'#d9822b']];
 const tbBtn=n=>`<button class="btn alt sm tbtn" id="tbtn" type="button">${ic(I_CAL,15)}<span id="tbt">${n?'Edit':'Tahapan'}</span></button>`;
 
 async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
@@ -393,11 +393,11 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  <div class="pnl hide" id="p_pencalonan"><div class="card"><div class="dua"><div><label for="crw">RW</label><select id="crw"></select></div><div><label for="crt">RT</label><select id="crt" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
  <div class="pnl hide" id="p_penghitungan"><div class="card"><div class="dua"><div><label for="grw">RW</label><select id="grw"></select></div><div><label for="grt">RT</label><select id="grt" disabled></select></div></div></div><div id="gres"></div></div>
  <div class="pnl hide" id="p_penetapan"><div class="card"><div class="dua"><div><label for="trw">RW</label><select id="trw"></select></div><div><label for="trt">RT</label><select id="trt" disabled></select></div></div></div><div id="tres"></div></div>
- <div class="pnl hide" id="p_pemilih"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"><div class="card" style="margin:0"><label for="vrw">RW</label><select id="vrw"></select></div><div class="card" style="margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1d7a4a;border-color:#1d7a4a;color:#fff"><small style="color:#fff;opacity:.9">Jumlah KK</small><b id="vkn" style="font-size:28px;font-family:'Bricolage Grotesque',system-ui,sans-serif">&ndash;</b></div></div><div id="vres"></div></div>
+ <div class="pnl hide" id="p_pemilih"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"><div class="card" style="margin:0"><label for="vrw">RW</label><select id="vrw"></select></div><div class="card" style="margin:0;display:flex;align-items:center;justify-content:center;gap:12px;background:#1d7a4a;border-color:#1d7a4a;color:#fff"><span style="display:grid;flex:none">${ic(I_USR,34)}</span><div><small id="vkl" style="color:#fff;opacity:.9;display:block">Jumlah KK</small><b id="vkn" style="font-size:26px;line-height:1.1;font-family:'Bricolage Grotesque',system-ui,sans-serif">&ndash;</b></div></div></div><div id="vres"></div></div>
  <div class="pnl hide" id="p_daftar"><div class="card"><div class="dua"><div><label for="lrw">RW</label><select id="lrw"></select></div><div><label for="lrt">RT</label><select id="lrt" disabled></select></div></div></div><div id="lres"></div></div></main>`;
  bindMenu(async k=>{if(k=='pencalonan'&&ended(tr,'pencalonan')){openSub('Daftar Calon',$('#p_daftar'));await pair('l',()=>showDaftar());$('#lres').innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat daftar calon.</p>';return}
   openSub(({pendata:'Pendata Warga',pencalonan:'Pendaftaran Calon',penghitungan:pmDone(tr)?'Hasil Perolehan Suara':'Perolehan Suara (Sementara)'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
-  if(k=='pemilih'){const {data}=await sb.from('petugas').select('rt,rw').eq('kelurahan',S.kelurahan);vPet=data||[];vRt='';const w=$('#vrw');w.innerHTML=opts([...new Set(vPet.map(r=>r.rw))].sort());w.onchange=()=>{vRt='';showPemilih()};$('#vkn').innerHTML='&ndash;';$('#vres').innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>'}
+  if(k=='pemilih'){const {data}=await sb.from('petugas').select('rt,rw').eq('kelurahan',S.kelurahan);vPet=data||[];vRt='';const w=$('#vrw');w.innerHTML=opts([...new Set(vPet.map(r=>r.rw))].sort());w.onchange=()=>{vRt='';showPemilih()};$('#vkl').textContent='Jumlah KK';$('#vkn').innerHTML='&ndash;';$('#vres').innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>'}
   if(k=='pendata'){lp();$('#rw').focus()}
   if(k=='pencalonan'){$('#crw').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT');calAct()});loadCalon('RW');loadCalon('RT');calAct()}
   if(k=='penghitungan'){await pair('g',()=>showHitung());$('#gres').innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat perolehan suara.</p>'}
@@ -536,10 +536,10 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  const vList=()=>{const el=$('#vlist');if(!vRt){el.innerHTML='<p class="hint" style="margin-top:12px">Pilih RT untuk melihat daftar pemilih.</p>';return}
   el.innerHTML=`<div class="srch">${'<span class="si">'+ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)+'</span>'}<input id="vq" autocomplete="off" placeholder="Cari nama KK atau alamat" aria-label="Cari pemilih"><button type="button" class="qx" id="vx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div id="vtb"></div>`;
   $('#vq').oninput=()=>{$('#vx').hidden=!$('#vq').value;vDraw()};$('#vx').onclick=()=>{$('#vq').value='';$('#vx').hidden=true;vDraw();$('#vq').focus()};vDraw()};
- const showPemilih=async()=>{const R=$('#vres'),rw=$('#vrw').value,tk=++vtk;if(!rw){$('#vkn').innerHTML='&ndash;';R.innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>';return}
+ const showPemilih=async()=>{const R=$('#vres'),rw=$('#vrw').value,tk=++vtk;if(!rw){$('#vkl').textContent='Jumlah KK';$('#vkn').innerHTML='&ndash;';R.innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>';return}
   R.innerHTML='<p class="hint">Memuat...</p>';
   try{vD=await kkList(rw)}catch(x){if(tk==vtk)R.innerHTML='<p class="msg">'+esc(x.message||x)+'</p>';return}
-  if(tk!=vtk)return;$('#vkn').textContent=vD.length;
+  if(tk!=vtk)return;$('#vkl').textContent='Jumlah KK RW '+rw;$('#vkn').textContent=vD.length;
   const rts=[...new Set([...vPet.filter(r=>r.rw==rw).map(r=>r.rt),...vD.map(x=>x.rt)])].sort();
   R.innerHTML=``+(rts.length?`<div class="rtt" id="vtabs">${rts.map(r=>`<button type="button" data-rt="${esc(r)}">RT ${esc(r)}<small>${vD.filter(x=>x.rt==r).length} KK</small></button>`).join('')}</div>`:'<p class="hint">Belum ada RT.</p>')+'<div id="vlist"></div>';
   const tb=$('#vtabs');if(tb)tb.onclick=e=>{const b=e.target.closest('button');if(!b)return;vRt=b.dataset.rt;tb.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));vList()};
