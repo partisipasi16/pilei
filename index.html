@@ -127,6 +127,7 @@ header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;mar
 .dua>.dn{min-width:0}.legend .sx{padding-left:8px}
 .rwb{display:flex;justify-content:center}.rwb .dn{margin-top:6px}
 .rtg{display:grid;grid-template-columns:1fr 1fr;margin-top:18px}.rtg>.dn{margin:0;padding:12px 6px;min-width:0}.rtg>.dn:nth-child(odd){border-right:1px solid var(--line)}.rtg>.dn:last-child:nth-child(odd){grid-column:1/-1;border-right:0}
+.rtt{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 4px}.rtt button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;border:1.5px solid var(--teal);color:var(--teal);background:#fff;border-radius:10px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}.rtt button small{font-weight:400;font-size:11px;opacity:.85}.rtt button.on{background:var(--teal);color:#fff}.vsc{overflow:auto}.vsc th{position:sticky;top:0;z-index:1}
 .srch{position:relative;margin:16px 0 10px}.srch input{padding-left:38px;padding-right:40px}.srch .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#56597a;display:grid;pointer-events:none}.srch .qx{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#56597a;cursor:pointer;display:grid;place-items:center}.srch .qx[hidden]{display:none}
 #pdl{max-height:60vh;overflow:auto}#pdl .ht th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
 /* --- Perbaikan: Informasi Data Warga */
@@ -386,11 +387,11 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
  <div class="pnl hide" id="p_pencalonan"><div class="card"><div class="dua"><div><label for="crw">RW</label><select id="crw"></select></div><div><label for="crt">RT</label><select id="crt" disabled></select></div></div></div>${calonCard('RW')}${calonCard('RT')}</div>
  <div class="pnl hide" id="p_penghitungan"><div class="card"><div class="dua"><div><label for="grw">RW</label><select id="grw"></select></div><div><label for="grt">RT</label><select id="grt" disabled></select></div></div></div><div id="gres"></div></div>
  <div class="pnl hide" id="p_penetapan"><div class="card"><div class="dua"><div><label for="trw">RW</label><select id="trw"></select></div><div><label for="trt">RT</label><select id="trt" disabled></select></div></div></div><div id="tres"></div></div>
- <div class="pnl hide" id="p_pemilih"><div class="card"><div class="dua"><div><label for="vrw">RW</label><select id="vrw"></select></div><div><label for="vrt">RT</label><select id="vrt" disabled></select></div></div></div><div id="vres"></div></div>
+ <div class="pnl hide" id="p_pemilih"><div class="card"><label for="vrw">RW</label><select id="vrw"></select></div><div id="vres"></div></div>
  <div class="pnl hide" id="p_daftar"><div class="card"><div class="dua"><div><label for="lrw">RW</label><select id="lrw"></select></div><div><label for="lrt">RT</label><select id="lrt" disabled></select></div></div></div><div id="lres"></div></div></main>`;
  bindMenu(async k=>{if(k=='pencalonan'&&ended(tr,'pencalonan')){openSub('Daftar Calon',$('#p_daftar'));await pair('l',()=>showDaftar());$('#lres').innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat daftar calon.</p>';return}
   openSub(({pendata:'Pendata Warga',pencalonan:'Pendaftaran Calon',penghitungan:pmDone(tr)?'Hasil Perolehan Suara':'Perolehan Suara (Sementara)'})[k]||KM.find(x=>x[0]==k)[1],$('#p_'+k));
-  if(k=='pemilih'){await pair('v',()=>showPemilih());$('#vres').innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat daftar pemilih.</p>'}
+  if(k=='pemilih'){const {data}=await sb.from('petugas').select('rt,rw').eq('kelurahan',S.kelurahan);vPet=data||[];vRt='';const w=$('#vrw');w.innerHTML=opts([...new Set(vPet.map(r=>r.rw))].sort());w.onchange=()=>{vRt='';showPemilih()};$('#vres').innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>'}
   if(k=='pendata'){lp();$('#rw').focus()}
   if(k=='pencalonan'){$('#crw').focus();await pair('c',()=>{loadCalon('RW');loadCalon('RT');calAct()});loadCalon('RW');loadCalon('RT');calAct()}
   if(k=='penghitungan'){await pair('g',()=>showHitung());$('#gres').innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat perolehan suara.</p>'}
@@ -500,9 +501,9 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   const rwR=tetapOf('Ketua RW '+rw,cl.filter(x=>x.jenis=='RW'),rw0,'rw'),rtR=rts.map((r,i)=>({rt:r,...tetapOf('Ketua RT '+r,cl.filter(x=>x.jenis=='RT'&&x.rt==r),rks[i]||null,'rt')}));
   const rtOk=rtR.filter(r=>r.x||r.none),ns=[rwR,...rtR].map(r=>r.n||'').join('');
   const noc=tag=>`<div style="margin:10px 0">${tag?'<small>'+tag+'</small>':''}<p class="hint" style="margin:2px 0 0">Tidak ada calon.</p></div>`;
-  R.innerHTML=((rwR.x||rtR.some(r=>r.x))?`<div class="cel"><div style="color:var(--gold)">${ic(I_TRO,44)}</div><h2>Selamat!</h2><p style="margin:6px 0 0">kepada calon terpilih.</p></div>`:'')
+  R.innerHTML=((rwR.x||rtR.some(r=>r.x))?`<div class="cel" style="display:flex;align-items:center;justify-content:center;gap:14px;text-align:left"><div style="color:var(--gold);display:grid">${ic(I_TRO,48)}</div><div><h2>Selamat!</h2><p style="margin:2px 0 0">kepada calon terpilih.</p></div></div>`:'')
    +((rwR.x||rwR.none)?`<div class="card hs"><h3>Ketua RW ${esc(rw)}</h3>${rwR.x?tWin('',rwR):noc('')}</div>`:'')
-   +(rtOk.length?`<div class="card hs"><h3>Ketua RT</h3>${rtOk.map(r=>r.x?tWin('RT '+esc(r.rt),r):noc('RT '+esc(r.rt))).join('')}</div>`:'')
+   +(rtOk.length?`<div class="card hs"><h3>Ketua RT</h3>${rtOk.map((r,i)=>`<div${i?' style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px"':''}>${r.x?tWin('RT '+esc(r.rt),r):noc('RT '+esc(r.rt))}</div>`).join('')}</div>`:'')
    +(ns?'<div class="card">'+ns+'</div>':'')||'<p class="hint">Calon terpilih belum dapat ditampilkan.</p>'};
  // --- Penghitungan suara (progress): RW saja = RW + semua RT; RT dipilih = RT + RW. Tampilan sama dengan Perolehan Suara warga (statistik per KK)
  let gtk=0;
@@ -520,18 +521,23 @@ async function kel(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurah
   const cl=qc.data||[],rw0=rks.find(Boolean)||null;
   R.innerHTML=hitSec('Ketua RW '+rw,cl.filter(x=>x.jenis=='RW'),rw0,'rw')+rts.map((r,i)=>hitSec('Ketua RT '+r,cl.filter(x=>x.jenis=='RT'&&x.rt==r),rks[i]||null,'rt')).join('')};
  setInterval(()=>{const p=$('#p_penghitungan');if(subOpen&&p&&p.closest('#sub')&&$('#grw').value)showHitung()},20000);
- // --- Data Pemilih (Kelurahan): RW dipilih = ringkasan RW + semua RT; RT dipilih = ringkasan RW + RT tersebut
- let vtk=0;
+ // --- Data Pemilih (Kelurahan): pilih RW -> jumlah KK RW + tab RT (jumlah KK); klik RT -> pencarian + tabel (10 baris pertama, sisanya scroll)
+ let vtk=0,vPet=[],vD=[],vRt='';
  const kkList=async rw=>{const cols=['nkk,rt,nama_kk,alamat,pass_hash,anggota(count)','nkk,rt,nama_kk,alamat,pass_hash'];for(const c of cols){let all=[],from=0,err=null;for(;;){const {data,error}=await sb.from('keluarga').select(c).eq('kelurahan',S.kelurahan).eq('rw',rw).order('nama_kk').range(from,from+999);if(error){err=error;break}all=all.concat(data||[]);if(!data||data.length<1000)break;from+=1000}if(!err)return all;if(c==cols[cols.length-1])throw err}};
- const jw=d=>d.some(x=>!(x.anggota&&x.anggota[0]))?'-':d.reduce((a,x)=>a+x.anggota[0].count+1,0);
- const vSum=d=>`<div class="rowh" style="margin:0 0 8px;font-size:14px"><span><b>${d.length}</b> KK</span><span><b>${jw(d)}</b> Jiwa</span></div>`;
- const vTab=d=>d.length?`<div class="scroll"><table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table></div>':'<p class="hint">Belum ada data pemilih.</p>';
- const showPemilih=async()=>{const R=$('#vres'),rw=$('#vrw').value,rt=$('#vrt').value,tk=++vtk;if(!rw){R.innerHTML='<p class="hint">Pilih RW (dan RT bila perlu) untuk melihat daftar pemilih.</p>';return}
+ const vRows=d=>d.length?`<table class="ht"><tr><th>Nama KK</th><th>Alamat</th><th class="ag">Jml Kel.</th><th class="ag">Status</th></tr>`+d.map(x=>`<tr><td class="nm">${esc(x.nama_kk)}</td><td class="al">${esc(x.alamat||'-')}</td><td class="ag">${x.anggota&&x.anggota[0]?x.anggota[0].count+1:'-'}</td><td class="ag">${x.pass_hash?'<span title="Sudah registrasi" role="img" aria-label="Sudah registrasi" style="color:#18794e">'+ic('<path d="M5 12l5 5 9-10"/>',20)+'</span>':'<span title="Belum registrasi" role="img" aria-label="Belum registrasi" style="color:#c0392b">'+ic('<path d="M6 6l12 12M18 6L6 18"/>',20)+'</span>'}</td></tr>`).join('')+'</table>':'<p class="hint">Data tidak ditemukan.</p>';
+ const vFit=()=>{const w=$('#vtb .vsc'),t=w&&w.querySelector('table');if(!t)return;w.style.maxHeight='';if(t.rows.length>11){let h=0;for(let i=0;i<11;i++)h+=t.rows[i].offsetHeight;w.style.maxHeight=(h+2)+'px'}};
+ const vDraw=()=>{const q=($('#vq').value||'').trim().toLowerCase(),l=vD.filter(x=>x.rt==vRt&&(!q||[x.nama_kk,x.alamat].join(' ').toLowerCase().includes(q)));$('#vtb').innerHTML='<div class="vsc">'+vRows(l)+'</div>';vFit()};
+ const vList=()=>{const el=$('#vlist');if(!vRt){el.innerHTML='<p class="hint" style="margin-top:12px">Pilih RT untuk melihat daftar pemilih.</p>';return}
+  el.innerHTML=`<div class="srch">${'<span class="si">'+ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)+'</span>'}<input id="vq" autocomplete="off" placeholder="Cari nama KK atau alamat" aria-label="Cari pemilih"><button type="button" class="qx" id="vx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div id="vtb"></div>`;
+  $('#vq').oninput=()=>{$('#vx').hidden=!$('#vq').value;vDraw()};$('#vx').onclick=()=>{$('#vq').value='';$('#vx').hidden=true;vDraw();$('#vq').focus()};vDraw()};
+ const showPemilih=async()=>{const R=$('#vres'),rw=$('#vrw').value,tk=++vtk;if(!rw){R.innerHTML='<p class="hint">Pilih RW untuk melihat jumlah dan daftar pemilih.</p>';return}
   R.innerHTML='<p class="hint">Memuat...</p>';
-  let d;try{d=await kkList(rw)}catch(x){if(tk==vtk)R.innerHTML='<p class="msg">'+esc(x.message||x)+'</p>';return}
+  try{vD=await kkList(rw)}catch(x){if(tk==vtk)R.innerHTML='<p class="msg">'+esc(x.message||x)+'</p>';return}
   if(tk!=vtk)return;
-  const rts=rt?[rt]:[...new Set([...[...$('#vrt').options].map(o=>o.value).filter(Boolean),...d.map(x=>x.rt)])].sort();
-  R.innerHTML=`<div class="card"><h3 style="margin:0 0 8px">RW ${esc(rw)}</h3>${vSum(d)}</div>`+rts.map(r=>{const l=d.filter(x=>x.rt==r);return `<div class="card"><h3 style="margin:0 0 8px">RT ${esc(r)}</h3>${vSum(l)}${vTab(l)}</div>`}).join('')};
+  const rts=[...new Set([...vPet.filter(r=>r.rw==rw).map(r=>r.rt),...vD.map(x=>x.rt)])].sort();
+  R.innerHTML=`<div class="card" style="text-align:center"><small>Jumlah KK RW ${esc(rw)}</small><b style="display:block;font-size:28px;font-family:'Bricolage Grotesque',system-ui,sans-serif">${vD.length}</b></div>`+(rts.length?`<div class="rtt" id="vtabs">${rts.map(r=>`<button type="button" data-rt="${esc(r)}">RT ${esc(r)}<small>${vD.filter(x=>x.rt==r).length} KK</small></button>`).join('')}</div>`:'<p class="hint">Belum ada RT.</p>')+'<div id="vlist"></div>';
+  const tb=$('#vtabs');if(tb)tb.onclick=e=>{const b=e.target.closest('button');if(!b)return;vRt=b.dataset.rt;tb.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));vList()};
+  vList()};
  // --- Daftar calon (Kelurahan, setelah tahapan Pencalonan berakhir): hanya tampilan
  let ltk=0;
  const dCard=(t,l)=>`<div class="card hs"><h3>${t}</h3>`+(l.length?l.map(x=>`<div class="cd"><img src="${esc(x.foto_url)}" alt="Foto ${esc(x.nama)}"><div style="flex:1;min-width:0"><b>${esc(x.nama)}${ageTxt(x)}</b>${x.pekerjaan?'<br><small>'+esc(x.pekerjaan)+'</small>':''}</div></div>`).join(''):'<p class="hint">Belum ada calon terdaftar.</p>')+'</div>';
