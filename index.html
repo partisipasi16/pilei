@@ -161,7 +161,6 @@ header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;mar
 .tg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .tg3>.tgi{border:1px solid var(--line)!important;border-radius:12px;padding:14px 8px!important;margin:0!important;text-align:center}
 .tg3 .cd{flex-direction:column;text-align:center;margin:0}.tg3 .cd img{width:84px;height:84px}.tg3 .cd>div{flex:none!important}
-#tls table{display:block}#tls tbody{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}#tls tr{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;padding:12px}#tls tr:first-child{display:none}#tls td{padding:0;border:0;white-space:normal!important}#tls td:first-child{font:700 15px 'Bricolage Grotesque',system-ui,sans-serif}
 }
 /* --- Tampilan PC/tablet (lanjutan) */
 @media(min-width:768px){
@@ -212,6 +211,15 @@ header.top,#sub .sh{padding-left:max(18px,calc((100% - 900px)/2 + 18px));padding
 #p_sect>.pel{grid-column:1;order:-2;display:flex;flex-direction:column;justify-content:center}
 #p_sect>.thx{grid-column:2;order:-1}
 #p_sect:not(:has(>.thx))>.pel,#p_sect:not(:has(>.pel))>.thx{grid-column:1/-1}
+/* Timeline Tahapan (kelurahan): isian sebaris, hasil dalam tabel */
+#p_tahapan>div:first-of-type{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(4,minmax(0,1fr));gap:0 10px}
+#p_tahapan>div:first-of-type .dua{display:contents}
+#p_tahapan input,#p_tahapan select{padding:10px 8px;font-size:14px}
+#tls table{background:#fff;border:1px solid var(--line)}
+#tls th{background:var(--paper);padding:9px 12px;white-space:nowrap}
+#tls td{padding:9px 12px;vertical-align:middle}
+#tls td:first-child{font-weight:600}
+#tls th:last-child,#tls td:last-child{width:1%;white-space:nowrap}
 }
 </style></head><body>
 
