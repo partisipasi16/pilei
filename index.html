@@ -167,7 +167,7 @@ header.top h1{line-height:1.2}header.top small{display:block;line-height:1.2;mar
 @media(min-width:768px){
 header.top,#sub .sh{padding-left:max(18px,calc((100% - 900px)/2 + 18px));padding-right:max(18px,calc((100% - 900px)/2 + 18px))}
 #sub .sh h2{text-align:left;margin-right:0}
-#p_pemilih:not(.hide){display:grid;grid-template-columns:2fr 3fr;gap:0 16px}
+#p_pemilih:not(.hide){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px}
 #p_pemilih>.card{grid-column:1;grid-row:1}
 #vres{display:contents}
 #vres>#vtabs{grid-column:2;grid-row:1;grid-template-columns:repeat(3,minmax(0,1fr));margin:0 0 16px}
@@ -183,6 +183,35 @@ header.top,#sub .sh{padding-left:max(18px,calc((100% - 900px)/2 + 18px));padding
 #tres>.cel{order:1}
 #tres>.twr{grid-column:2;order:3}
 #p_pendata .srch{width:50%}
+}
+/* --- Tampilan PC/tablet (lanjutan 2) */
+@media(min-width:768px){
+/* Tabel Data Pemilih (pendata): Nama 40%, Alamat 35%, Jml Klrga 15%, Status 10% */
+#dp .ht{width:100%;table-layout:fixed}
+#dp .ht th,#dp .ht td{padding-left:8px;padding-right:8px;overflow-wrap:anywhere}
+#dp .ht td.nm,#dp .ht td.al{min-width:0}
+#dp .ht tr:first-child th:nth-child(1){width:40%}
+#dp .ht tr:first-child th:nth-child(2){width:35%}
+#dp .ht tr:first-child th:nth-child(3){width:15%}
+#dp .ht tr:first-child th:nth-child(4){width:10%}
+/* Kolom cari sebaris dengan jumlah KK dan Jiwa */
+#dpsec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 12px;align-items:center}
+#dpsec>h3,#dpsec>#dp{grid-column:1/-1}
+#dpsec>#dpc{grid-column:1}
+#dpsec>#dps{grid-column:2;margin:0 0 10px}
+/* Sub halaman Input Data KK: NKK, NIK KK, Nama KK sebaris; Alamat, No HP sebaris */
+#pd .grid2{grid-template-columns:repeat(3,minmax(0,1fr))}
+#pd .grid2>div:nth-child(1){order:1}
+#pd .grid2>div:nth-child(3){order:2}
+#pd .grid2>div:nth-child(2){order:3}
+#pd .grid2>div:nth-child(4){order:4}
+#pd .grid2>div:nth-child(5){order:5}
+/* Ayo Memilih (warga): kartu Pelaksanaan (kiri) dan Selamat (kanan) sebaris */
+#p_sect:not(.hide){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px}
+#p_sect>*{grid-column:1/-1;min-width:0}
+#p_sect>.pel{grid-column:1;order:-2;display:flex;flex-direction:column;justify-content:center}
+#p_sect>.cel{grid-column:2;order:-1}
+#p_sect:not(:has(>.cel))>.pel,#p_sect:not(:has(>.pel))>.cel{grid-column:1/-1}
 }
 </style></head><body>
 
@@ -656,7 +685,7 @@ let hlKK=null;
 async function petugas(A){const [l,p]=await counts(S);const tl=await getTl(S.kelurahan);
  const canAdd=()=>tl.some(t=>kind(t)=='pendataan'&&aktif(t));
  A.innerHTML=head(esc(S.nama),'Pendata RT '+esc(S.rt)+'/RW '+esc(S.rw)+' '+esc(S.kelurahan),`<div class="hd" id="dn">${hdrP(l,p,canAdd())}</div>`,'ttl')+`<main>${prosHtml('Prosedur Kerja',PROS_PND,CLP)}${tlCard(tlHtml(tl))}<button class="btn alt wide" id="tb2" type="button"${canAdd()?'':' hidden'}>${ic(PG,20)}Tambah Data Pemilih</button>
- <section class="flat"><h3>${ic(I_USR,20)}Data Pemilih</h3><div id="dpc"></div><div class="srch" id="dps" hidden><span class="si">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)}</span><input id="dpq" autocomplete="off" placeholder="Cari nama KK atau alamat" aria-label="Cari pemilih"><button type="button" class="qx" id="dpx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div class="scroll" id="dp"></div></section>
+ <section class="flat" id="dpsec"><h3>${ic(I_USR,20)}Data Pemilih</h3><div id="dpc"></div><div class="srch" id="dps" hidden><span class="si">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',18)}</span><input id="dpq" autocomplete="off" placeholder="Cari nama KK atau alamat" aria-label="Cari pemilih"><button type="button" class="qx" id="dpx" hidden aria-label="Hapus pencarian">${ic('<path d="M6 6l12 12M18 6L6 18"/>',18)}</button></div><div class="scroll" id="dp"></div></section>
  <div class="card hide" id="pd"><h3 id="pt" class="hide"></h3><div class="rowh" style="margin-bottom:6px"><p class="hint" style="margin:0">Semua isian wajib diisi.</p><button class="btn ghost sm" id="cx" type="button">Batal</button></div><div class="grid2">
  <div><label>NKK</label><input id="nkk" class="num" inputmode="numeric" maxlength="16"></div><div><label>Nama Kepala Keluarga</label><input id="nkp"></div>
  <div><label>NIK Kepala Keluarga</label><input id="nkik" class="num" inputmode="numeric" maxlength="16"><div class="msg nkm"></div></div><div><label>Alamat</label><input id="al"></div>
