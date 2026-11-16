@@ -206,12 +206,12 @@ header.top,#sub .sh{padding-left:max(18px,calc((100% - 900px)/2 + 18px));padding
 #pd .grid2>div:nth-child(2){order:3}
 #pd .grid2>div:nth-child(4){order:4}
 #pd .grid2>div:nth-child(5){order:5}
-/* Ayo Memilih (warga): kartu Pelaksanaan (kiri) dan Selamat (kanan) sebaris */
+/* Ayo Memilih (warga): kartu Pelaksanaan (kiri) dan Terima Kasih (kanan) sebaris */
 #p_sect:not(.hide){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px}
 #p_sect>*{grid-column:1/-1;min-width:0}
 #p_sect>.pel{grid-column:1;order:-2;display:flex;flex-direction:column;justify-content:center}
-#p_sect>.cel{grid-column:2;order:-1}
-#p_sect:not(:has(>.cel))>.pel,#p_sect:not(:has(>.pel))>.cel{grid-column:1/-1}
+#p_sect>.thx{grid-column:2;order:-1}
+#p_sect:not(:has(>.thx))>.pel,#p_sect:not(:has(>.pel))>.thx{grid-column:1/-1}
 }
 </style></head><body>
 
